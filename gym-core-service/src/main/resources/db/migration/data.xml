@@ -1,0 +1,104 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.25.xsd">
+
+    <changeSet id="GIA-56 13-add-training_types" author="julia">
+        <insert tableName="training_types">
+            <column name="id" valueNumeric="1"/>
+            <column name="training_type_name" value="Yoga"/>
+        </insert>
+        <insert tableName="training_types">
+            <column name="id" valueNumeric="2"/>
+            <column name="training_type_name" value="Pilates"/>
+        </insert>
+        <insert tableName="training_types">
+            <column name="id" valueNumeric="3"/>
+            <column name="training_type_name" value="Cardio"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="GIA-56 14-add-users" author="julia">
+        <insert tableName="users">
+            <column name="id" valueNumeric="1"/>
+            <column name="first_name" value="Callum"/>
+            <column name="last_name" value="Whitfield"/>
+            <column name="username" value="Callum.Whitfield"/>
+            <column name="password" value="pass111"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="2"/>
+            <column name="first_name" value="Nora"/>
+            <column name="last_name" value="Pemberton"/>
+            <column name="username" value="Nora.Pemberton"/>
+            <column name="password" value="pass222"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="3"/>
+            <column name="first_name" value="Ellis"/>
+            <column name="last_name" value="Hargrove"/>
+            <column name="username" value="Ellis.Hargrove"/>
+            <column name="password" value="pass333"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="GIA-56 15-add-trainers" author="julia">
+        <insert tableName="trainers">
+            <column name="id" valueNumeric="1"/>
+            <column name="specialization_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="GIA-56 16-add-trainees" author="julia">
+        <insert tableName="trainees">
+            <column name="id" valueNumeric="1"/>
+            <column name="date_of_birth" valueDate="2000-03-10"/>
+            <column name="address" value="123 Main St"/>
+            <column name="user_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="trainees">
+            <column name="id" valueNumeric="2"/>
+            <column name="date_of_birth" valueDate="2002-07-15"/>
+            <column name="address" value="567 Oak St"/>
+            <column name="user_id" valueNumeric="3"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="GIA-56 17-add-trainings" author="julia">
+        <insert tableName="trainings">
+            <column name="id" valueNumeric="1"/>
+            <column name="training_name" value="Hot Yoga"/>
+            <column name="training_date" valueDate="2026-04-15"/>
+            <column name="training_duration" valueNumeric="60"/>
+            <column name="trainee_id" valueNumeric="1"/>
+            <column name="trainer_id" valueNumeric="1"/>
+            <column name="training_type_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="trainings">
+            <column name="id" valueNumeric="2"/>
+            <column name="training_name" value="Hot Yoga"/>
+            <column name="training_date" valueDate="2026-04-20"/>
+            <column name="training_duration" valueNumeric="60"/>
+            <column name="trainee_id" valueNumeric="2"/>
+            <column name="trainer_id" valueNumeric="1"/>
+            <column name="training_type_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="GIA-56 18-add-trainings_trainers" author="julia">
+        <insert tableName="trainees_trainers">
+            <column name="trainee_id" valueNumeric="1"/>
+            <column name="trainer_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="trainees_trainers">
+            <column name="trainee_id" valueNumeric="2"/>
+            <column name="trainer_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,13 @@
+<dataset>
+
+    <users id="1" first_name="Simone" last_name="Radcliffe" username="Simone.Radcliffe" password="$2a$12$t5uzrr.BRNAzZrEaP/Q5XuBrNaWG.wz277HZLUGI05fB8oUOx4p6a" is_active="true"/>
+    <users id="2" first_name="Nora" last_name="Pemberton" username="Nora.Pemberton" password="$2a$12$EMDlDQnVEV.NCYG6OwO5yOSTV8LruKDXBHuhPYGzvTNTd2d7Py1lC" is_active="true"/>
+    <users id="3" first_name="Ellis" last_name="Hargrove" username="Ellis.Hargrove" password="$2a$12$hbbyyvPrqxDMKPiOvpdhl.RzH2pDhf1ifhq0N2duESAgerImLAAm6" is_active="true"/>
+
+    <trainees />
+    <training_types />
+    <trainers />
+    <trainees_trainers />
+    <trainings />
+
+</dataset>
