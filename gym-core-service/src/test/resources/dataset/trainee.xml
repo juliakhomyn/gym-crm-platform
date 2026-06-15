@@ -1,0 +1,24 @@
+<dataset>
+
+    <users id="1" first_name="Callum" last_name="Whitfield" username="Callum.Whitfield" password="$2a$12$t5uzrr.BRNAzZrEaP/Q5XuBrNaWG.wz277HZLUGI05fB8oUOx4p6a" is_active="true"/>
+    <users id="2" first_name="Nora" last_name="Pemberton" username="Nora.Pemberton" password="$2a$12$EMDlDQnVEV.NCYG6OwO5yOSTV8LruKDXBHuhPYGzvTNTd2d7Py1lC" is_active="true"/>
+    <users id="3" first_name="Ellis" last_name="Hargrove" username="Ellis.Hargrove" password="$2a$12$hbbyyvPrqxDMKPiOvpdhl.RzH2pDhf1ifhq0N2duESAgerImLAAm6" is_active="true"/>
+    <users id="4" first_name="Owen" last_name="Castleberry" username="Owen.Castleberry" password="$2a$12$aw/tCnfTnWbvb6iLZK5W5OLasMX5roW98FXX9/lwg3glYaOJpzUt." is_active="true"/>
+    <users id="5" first_name="Petra" last_name="Dunmore" username="Petra.Dunmore" password="$2a$12$2Fvqo7HgzEaSMQiE8Pd9mej7wTaznWTJAaVx0laBZfW0OPH7TPiwS" is_active="true"/>
+
+    <trainees id="1" date_of_birth="2000-03-10" address="123 Main St" user_id="2"/>
+    <trainees id="2" date_of_birth="2002-07-15" address="567 Oak St" user_id="3"/>
+
+    <training_types id="1" training_type_name="Yoga"/>
+    <training_types id="2" training_type_name="Pilates"/>
+
+    <trainers id="1" specialization_id="1" user_id="1"/>
+    <trainers id="2" specialization_id="1" user_id="4"/>
+    <trainers id="3" specialization_id="1" user_id="5"/>
+
+    <trainees_trainers trainee_id="1" trainer_id="1"/>
+    <trainees_trainers trainee_id="2" trainer_id="2"/>
+
+    <trainings />
+
+</dataset>
