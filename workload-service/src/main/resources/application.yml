@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: workload-service
+
+server:
+  port: 8081
+  servlet:
+    context-path: /workload-service
+
+app:
+  api:
+    base-path: /api/v1

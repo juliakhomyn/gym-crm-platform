@@ -81,17 +81,29 @@ mvn clean compile
 mvn test
 ```
 
-## 7. Run the application from console
+## 7. Run services from console
+
+### gym-core-service
 
 ```bash
+cd gym-core-service
 mvn spring-boot:run
 ```
 
-After startup, the application will be available at:
+After startup, service will be available at:
 
 * Base API Path: http://localhost:8080/gym-crm/api/v1
 * OpenAPI / Swagger UI: http://localhost:8080/gym-crm/swagger-ui/index.html
 * OpenAPI Spec (JSON): http://localhost:8080/gym-crm/v3/api-docs
+
+### workload-service
+
+```bash
+cd workload-service
+mvn spring-boot:run
+```
+
+Available at: http://localhost:8081
 
 ## Postman Collection
 
