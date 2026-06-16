@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
 class WorkloadAppTest {
@@ -20,6 +21,6 @@ class WorkloadAppTest {
 
     @Test
     void main_shouldRunWithoutExceptions() {
-        WorkloadApp.main(new String[] {});
+        assertDoesNotThrow(() -> WorkloadApp.main(new String[] {}));
     }
 }
