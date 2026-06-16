@@ -17,4 +17,9 @@ class WorkloadAppTest {
     void context_shouldLoadSuccessfully() {
         assertThat(context).isNotNull();
     }
+
+    @Test
+    void main_shouldRunWithoutExceptions() {
+        WorkloadApp.main(new String[] {});
+    }
 }
