@@ -1,0 +1,224 @@
+openapi: 3.0.3
+info:
+  title: Trainer Workload API
+  description: API for managing trainer workload
+  version: '1.0'
+
+servers:
+- url: http://localhost:8081/workload-service/api/v1
+  description: Local development server
+
+tags:
+- name: Trainer Workload
+  description: Operations related to trainer workload
+
+paths:
+  /trainers/workload:
+    post:
+      security: []
+      tags:
+      - Trainer Workload
+      summary: Add or delete trainer workload
+      description: Accepts trainer's workload data with add or delete action type
+      operationId: manageTrainerWorkload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrainerWorkloadRequest'
+      responses:
+        '200':
+          description: Trainer workload managed successfully
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        default:
+          description: Unexpected error
+
+  /trainers/workload/{username}:
+    get:
+      tags:
+      - Trainer Workload
+      summary: Get trainer workload in hours for a specific year and month
+      description: Returns total workload in hours for a given trainer
+      operationId: getTrainerWorkload
+      parameters:
+      - $ref: '#/components/parameters/Username'
+      - $ref: '#/components/parameters/Month'
+      - $ref: '#/components/parameters/Year'
+      responses:
+        '200':
+          description: Trainer workload retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrainerWorkloadResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        default:
+          description: Unexpected error
+
+components:
+  parameters:
+    Username:
+      name: username
+      in: path
+      description: The username of the trainer
+      required: true
+      schema:
+        type: string
+        pattern: ^[a-zA-Z]+\.[a-zA-Z]+(\d+)?$
+        example: billy.herrington
+    Month:
+      name: month
+      in: query
+      required: true
+      description: Month number of workload (1-12)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 12
+        example: 5
+    Year:
+      name: year
+      in: query
+      required: true
+      description: Year of workload
+      schema:
+        type: integer
+        example: 2025
+  schemas:
+    ActionType:
+      type: string
+      description: Workload action type
+      enum:
+        - ADD
+        - DELETE
+      example: ADD
+    TrainerWorkloadRequest:
+      type: object
+      required:
+        - trainerUsername
+        - trainerFirstName
+        - trainerLastName
+        - isActive
+        - trainingDate
+        - trainingDuration
+        - actionType
+      properties:
+        trainerUsername:
+          type: string
+          description: Trainer username
+          pattern: ^[a-zA-Z]+\.[a-zA-Z]+(\d+)?$
+          example: billy.herrington
+        trainerFirstName:
+          type: string
+          description: Trainer first name
+          maxLength: 50
+          example: Billy
+        trainerLastName:
+          type: string
+          description: Trainer last name
+          maxLength: 50
+          example: Herrington
+        isActive:
+          type: boolean
+          description: Trainer active status
+          example: true
+        trainingDate:
+          type: string
+          format: date
+          description: Training date
+          example: '2026-01-01'
+        trainingDuration:
+          type: integer
+          description: Training duration in minutes
+          minimum: 1
+          example: 60
+        actionType:
+          $ref: '#/components/schemas/ActionType'
+    TrainerWorkloadResponse:
+      type: object
+      required:
+        - trainerUsername
+        - year
+        - month
+        - trainingDuration
+      properties:
+        trainerUsername:
+          type: string
+          description: Trainer username
+          example: billy.herrington
+        year:
+          type: integer
+          description: Year of workload
+          example: 2025
+        month:
+          type: integer
+          description: Month number of workload
+          minimum: 1
+          maximum: 12
+          example: 5
+        trainingDuration:
+          type: integer
+          description: Total trainer workload duration for the selected month in minutes
+          example: 240
+    ErrorResponse:
+      type: object
+      required:
+        - errorCode
+        - errorMessage
+      properties:
+        errorCode:
+          type: integer
+          description: Unique identifier for the error type
+          example: 2760
+        errorMessage:
+          type: string
+          description: Human-readable description of the error
+          example: "Validation error: trainerUsername is required"
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Basic authentication using username and password
+security:
+- basicAuth: []
