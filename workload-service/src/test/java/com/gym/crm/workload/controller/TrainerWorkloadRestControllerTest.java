@@ -1,7 +1,6 @@
 package com.gym.crm.workload.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gym.crm.workload.dto.ActionType;
 import com.gym.crm.workload.dto.TrainerWorkloadUpdateDTO;
 import com.gym.crm.workload.mapper.TrainerWorkloadMapper;
 import com.gym.crm.workload.openapi.model.TrainerWorkloadRequest;

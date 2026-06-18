@@ -62,16 +62,6 @@ public class TestDataProvider {
                 .build();
     }
 
-    public static TrainerWorkloadResponse buildTTrainerWorkloadResponse() {
-        TrainerWorkloadResponse response = new TrainerWorkloadResponse();
-        response.setTrainerUsername(USERNAME);
-        response.setYear(YEAR);
-        response.month(MONTH);
-        response.setTrainingDuration(DURATION);
-
-        return response;
-    }
-
     public static TrainerWorkloadRequest buildTrainerWorkloadRequest() {
         TrainerWorkloadRequest request = new TrainerWorkloadRequest();
         request.setTrainerUsername(USERNAME);
