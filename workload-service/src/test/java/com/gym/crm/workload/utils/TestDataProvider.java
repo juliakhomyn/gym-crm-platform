@@ -6,7 +6,6 @@ import com.gym.crm.workload.model.MonthWorkload;
 import com.gym.crm.workload.model.TrainerWorkload;
 import com.gym.crm.workload.model.YearWorkload;
 import com.gym.crm.workload.openapi.model.TrainerWorkloadRequest;
-import com.gym.crm.workload.openapi.model.TrainerWorkloadResponse;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
