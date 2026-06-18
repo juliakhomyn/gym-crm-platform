@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TrainerWorkloadServiceImplTest {
+class TrainerWorkloadServiceImplTest {
     private static final String USERNAME = "Callum.Whitfield";
     private static final String FIRST_NAME = "Callum";
     private static final String LAST_NAME = "Whitfield";

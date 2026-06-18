@@ -11,6 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class TrainerWorkloadRepositoryImplTest {
     private static final String USERNAME = "Callum.Whitfield";
+    private static final String FIRST_NAME = "Callum";
+    private static final String LAST_NAME = "Whitfield";
 
     private final TrainerWorkload workload = TestDataProvider.buildTrainerWorkload();
     private final TrainerWorkloadRepositoryImpl repository = new TrainerWorkloadRepositoryImpl();
@@ -37,9 +39,13 @@ class TrainerWorkloadRepositoryImplTest {
         repository.save(workload);
 
         Optional<TrainerWorkload> actual = repository.findByTrainerUsername(USERNAME);
-
         assertThat(actual).isPresent();
-        assertThat(actual.get().getTrainerUsername()).isEqualTo(USERNAME);
+        TrainerWorkload stored = actual.get();
+        assertThat(stored.getTrainerUsername()).isEqualTo(USERNAME);
+        assertThat(stored.getTrainerFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(stored.getTrainerLastName()).isEqualTo(LAST_NAME);
+        assertThat(stored.getIsActive()).isTrue();
+        assertThat(stored.getYears()).isNotEmpty();
     }
 
     @Test

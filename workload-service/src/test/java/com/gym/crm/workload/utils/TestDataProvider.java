@@ -27,7 +27,7 @@ public class TestDataProvider {
                 .trainerFirstName(FIRST_NAME)
                 .trainerLastName(LAST_NAME)
                 .isActive(true)
-                .trainingDate(LocalDate.of(YEAR, 1, 1))
+                .trainingDate(LocalDate.of(YEAR, MONTH, 1))
                 .trainingDuration(DURATION)
                 .actionType(actionType)
                 .build();
