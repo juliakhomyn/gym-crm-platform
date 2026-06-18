@@ -20,45 +20,45 @@ import static com.gym.crm.workload.exception.ApiError.VALIDATION_ERROR;
 @Slf4j
 @RestControllerAdvice
 public class ApiExceptionHandler {
+
     private static final String VALIDATION_ERROR_LOG_MESSAGE = "Validation error: {}";
 
     @ExceptionHandler(ValidationFailedException.class)
     public ResponseEntity<ErrorResponse> handleValidationFailedException(ValidationFailedException ex) {
-        log.warn(VALIDATION_ERROR_LOG_MESSAGE, ex.getMessage());
-
-        return buildErrorResponse(VALIDATION_ERROR, ex.getMessage());
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + " " + error.getDefaultMessage())
-                .collect(Collectors.joining("; "));
-        log.warn(VALIDATION_ERROR_LOG_MESSAGE, errorMessage);
-
-        return buildErrorResponse(VALIDATION_ERROR, errorMessage);
+        return validationResponse(ex.getMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ErrorResponse> handleMissingParameter(MissingServletRequestParameterException ex) {
-        String errorMessage = ex.getParameterName() + " is required";
-        log.warn(VALIDATION_ERROR_LOG_MESSAGE, errorMessage);
+        return validationResponse(ex.getParameterName() + " is required");
+    }
 
-        return buildErrorResponse(VALIDATION_ERROR, errorMessage);
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException ex) {
+
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> "%s %s".formatted(
+                        error.getField(),
+                        error.getDefaultMessage()))
+                .collect(Collectors.joining("; "));
+
+        return validationResponse(message);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
-        String errorMessage = ex.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.joining("; "));
-        log.warn(VALIDATION_ERROR_LOG_MESSAGE, errorMessage);
-
-        return buildErrorResponse(VALIDATION_ERROR, errorMessage);
+        return validationResponse(
+                ex.getConstraintViolations().stream()
+                        .map(ConstraintViolation::getMessage)
+                        .collect(Collectors.joining("; "))
+        );
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(
+            EntityNotFoundException ex) {
+
         log.warn("Requested data was not found: {}", ex.getMessage());
 
         return buildErrorResponse(NOT_FOUND_ERROR, ex.getMessage());
@@ -71,13 +71,17 @@ public class ApiExceptionHandler {
         return buildErrorResponse(SERVICE_ERROR, "");
     }
 
+    private ResponseEntity<ErrorResponse> validationResponse(String message) {
+        log.warn(VALIDATION_ERROR_LOG_MESSAGE, message);
+
+        return buildErrorResponse(VALIDATION_ERROR, message);
+    }
+
     private ResponseEntity<ErrorResponse> buildErrorResponse(ApiError apiError, String message) {
-        message = StringUtils.isBlank(message) ? "" : message;
+        ErrorResponse response = new ErrorResponse();
+        response.setErrorCode(apiError.getCode());
+        response.setErrorMessage(apiError.getMessage() + StringUtils.defaultString(message));
 
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setErrorCode(apiError.getCode());
-        errorResponse.setErrorMessage(apiError.getMessage() + message);
-
-        return new ResponseEntity<>(errorResponse, apiError.getStatus());
+        return ResponseEntity.status(apiError.getStatus()).body(response);
     }
 }
