@@ -15,6 +15,12 @@ app:
     base-path: /api/v1
   cors:
     allowed-origins: http://localhost:3000
+  services:
+    workload:
+      url: http://localhost:8081/workload-service/api/v1
+      connect-timeout-ms: 3000
+      read-timeout-ms: 5000
+
 
 jwt:
   secret: TestSecret777mtsbW5vcHFyc3R1dnd4eXo1Njc4OTAxMjM0NTY3OA==

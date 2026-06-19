@@ -333,6 +333,13 @@ class GymFacadeTest {
     }
 
     @Test
+    void deleteTraining_shouldDeleteTraining() {
+        facade.deleteTraining(1L, TRAINER_USERNAME);
+
+        verify(trainingService).deleteById(1L, TRAINER_USERNAME);
+    }
+
+    @Test
     void getTraineeTrainingsByFilter_shouldReturnListOfGetTrainingResponse() {
         when(trainingMapper.toRestTraineeResponse(trainingResponseDTO)).thenReturn(getTraineeTrainingResponse);
         when(trainingService.getTraineeTrainings(traineeTrainingFilter)).thenReturn(List.of(trainingResponseDTO));

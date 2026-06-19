@@ -1,5 +1,6 @@
 package com.gym.crm.core.service;
 
+import com.gym.crm.core.client.TrainerWorkloadClientService;
 import com.gym.crm.core.facade.dto.training.TrainingRequestDTO;
 import com.gym.crm.core.facade.dto.training.TrainingResponseDTO;
 import com.gym.crm.core.facade.dto.training.TrainingTypeDTO;
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +69,8 @@ class TrainingServiceImplTest {
     private TrainingTypeRepository trainingTypeRepository;
     @Mock
     private TrainingMapper mapper;
+    @Mock
+    private TrainerWorkloadClientService workloadClientService;
 
     @InjectMocks
     private TrainingServiceImpl service;
@@ -86,6 +90,39 @@ class TrainingServiceImplTest {
         verify(mapper).toEntity(request);
         verify(mapper).toDto(savedTraining);
         verify(trainingRepository).save(any(Training.class));
+        verify(workloadClientService).notifyTrainingAdded(any(Training.class));
+    }
+
+    @Test
+    void deleteById_shouldDeleteAndNotifyWorkload_whenAuthorized() {
+        when(trainingRepository.findById(VALID_ID)).thenReturn(Optional.of(savedTraining));
+
+        service.deleteById(VALID_ID, TRAINER_USERNAME);
+
+        verify(trainingRepository).delete(savedTraining);
+        verify(workloadClientService).notifyTrainingDeleted(savedTraining);
+    }
+
+    @Test
+    void deleteById_shouldThrowAccessDenied_whenNotAuthorized() {
+        when(trainingRepository.findById(VALID_ID)).thenReturn(Optional.of(savedTraining));
+
+        AccessDeniedException exception = assertThrows(AccessDeniedException.class, () -> service.deleteById(VALID_ID, TRAINEE_USERNAME));
+
+        assertThat(exception.getMessage()).contains("Access Denied");
+        verify(trainingRepository, never()).delete(any(Training.class));
+        verify(workloadClientService, never()).notifyTrainingDeleted(any());
+    }
+
+    @Test
+    void deleteById_shouldThrowEntityNotFound_whenTrainingNotFound() {
+        when(trainingRepository.findById(VALID_ID)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> service.deleteById(VALID_ID, TRAINER_USERNAME));
+
+        assertThat(exception.getMessage()).contains("Training not found");
+        verify(trainingRepository, never()).delete(any(Training.class));
+        verify(workloadClientService, never()).notifyTrainingDeleted(any());
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.gym.crm.core.facade.dto.training.TrainingRequestDTO;
 import com.gym.crm.core.facade.dto.training.TrainingResponseDTO;
 import com.gym.crm.core.facade.dto.training.TrainingTypeDTO;
 import com.gym.crm.core.facade.dto.validation.ValidId;
+import com.gym.crm.core.facade.dto.validation.ValidUsername;
 import com.gym.crm.core.search.filter.TraineeTrainingFilter;
 import com.gym.crm.core.search.filter.TrainerTrainingFilter;
 import jakarta.validation.Valid;
@@ -14,6 +15,8 @@ import java.util.List;
 @Validated
 public interface TrainingService {
     TrainingResponseDTO createTraining(@Valid TrainingRequestDTO trainingRequestDTO);
+
+    void deleteById(@ValidId Long id, @ValidUsername String trainerUsername);
 
     TrainingResponseDTO getTrainingById(@ValidId Long id);
 

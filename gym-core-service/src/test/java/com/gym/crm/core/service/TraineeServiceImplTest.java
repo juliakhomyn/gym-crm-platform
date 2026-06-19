@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import com.gym.crm.core.client.TrainerWorkloadClientService;
 import com.gym.crm.core.facade.dto.trainee.TraineeInfoDTO;
 import com.gym.crm.core.facade.dto.trainee.TraineeRequestDTO;
 import com.gym.crm.core.facade.dto.trainee.TraineeResponseDTO;
@@ -16,6 +17,7 @@ import com.gym.crm.core.facade.mapper.TraineeMapper;
 import com.gym.crm.core.facade.mapper.TrainerMapper;
 import com.gym.crm.core.model.Trainee;
 import com.gym.crm.core.model.Trainer;
+import com.gym.crm.core.model.Training;
 import com.gym.crm.core.repository.TraineeRepository;
 import com.gym.crm.core.repository.TrainerRepository;
 import com.gym.crm.core.service.common.UserProfileService;
@@ -40,6 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -79,6 +82,8 @@ class TraineeServiceImplTest {
     private TrainerRepository trainerRepository;
     @Mock
     private TrainerMapper trainerMapper;
+    @Mock
+    private TrainerWorkloadClientService workloadClientService;
 
     @InjectMocks
     private TraineeServiceImpl service;
@@ -161,26 +166,41 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void deleteByUsername_shouldDelete_whenTraineeExists() {
-        Trainee traineeWithTrainers = TestDataProvider.buildTraineeWithTrainers(new HashSet<>());
-        when(repository.findByUsernameWithTrainers(USERNAME)).thenReturn(Optional.of(traineeWithTrainers));
+    void deleteByUsername_shouldDeleteAndNotifyWorkload_whenTraineeExists() {
+        Trainee trainee = TestDataProvider.buildTraineeWithTrainers(new HashSet<>());
+        when(repository.findByUsernameWithTrainers(USERNAME)).thenReturn(Optional.of(trainee));
 
         service.deleteByUsername(USERNAME);
 
-        verify(repository).save(traineeWithTrainers);
-        verify(repository).delete(traineeWithTrainers);
+        verify(repository).save(trainee);
+        verify(repository).delete(trainee);
+        verify(workloadClientService, times(1)).notifyTrainingDeleted(any(Training.class));
     }
 
     @Test
     void deleteByUsername_shouldThrow_whenTraineeNotFound() {
         when(repository.findByUsernameWithTrainers(USERNAME)).thenReturn(Optional.empty());
 
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
-                () -> service.deleteByUsername(USERNAME));
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> service.deleteByUsername(USERNAME));
 
         assertThat(exception.getMessage()).isEqualTo(String.format(TRAINEE_NOT_FOUND_BY_USERNAME, USERNAME));
         verify(repository, never()).save(any());
         verify(repository, never()).delete(any(Trainee.class));
+    }
+
+    @Test
+    void deleteByUsername_shouldDeleteAndNotNotifyWorkload_whenTraineeHasNoTrainings() {
+        Trainee trainee = TestDataProvider.buildTraineeWithTrainers(new HashSet<>()).toBuilder()
+                .trainings(Set.of())
+                .build();
+
+        when(repository.findByUsernameWithTrainers(USERNAME)).thenReturn(Optional.of(trainee));
+
+        service.deleteByUsername(USERNAME);
+
+        verify(repository).save(trainee);
+        verify(repository).delete(trainee);
+        verify(workloadClientService, never()).notifyTrainingDeleted(any());
     }
 
     @Test
