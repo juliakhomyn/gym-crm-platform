@@ -125,7 +125,7 @@ class AuthorizationIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = TRAINER_USERNAME)
+    @WithMockUser(username = TRAINEE_USERNAME)
     void deleteTraining_shouldFail_whenUsernameDoesNotMatchPrincipal() {
         AccessDeniedException exception = assertThrows(AccessDeniedException.class, () -> gymFacade.deleteTraining(1L, TRAINER_USERNAME));
 
