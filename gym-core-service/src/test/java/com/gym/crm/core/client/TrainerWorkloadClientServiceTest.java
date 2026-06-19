@@ -13,6 +13,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 
 import java.time.LocalDate;
+import java.time.Month;
 
 import static com.gia.openapi.model.ActionType.ADD;
 import static com.gia.openapi.model.ActionType.DELETE;
@@ -26,7 +27,7 @@ class TrainerWorkloadClientServiceTest {
     private static final String TRAINER_USERNAME = "Owen.Castleberry";
     private static final String TRAINER_FIRST_NAME = "Owen";
     private static final String TRAINER_LAST_NAME = "Castleberry";
-    private static final LocalDate TRAINING_DATE = LocalDate.of(2024, 1, 15);
+    private static final LocalDate TRAINING_DATE = LocalDate.of(2024, Month.JANUARY, 15);
 
     private final Training training = TestDataProvider.buildTraining();
 

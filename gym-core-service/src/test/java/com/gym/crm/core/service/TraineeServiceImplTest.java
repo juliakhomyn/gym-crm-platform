@@ -167,13 +167,13 @@ class TraineeServiceImplTest {
 
     @Test
     void deleteByUsername_shouldDeleteAndNotifyWorkload_whenTraineeExists() {
-        Trainee trainee = TestDataProvider.buildTraineeWithTrainers(new HashSet<>());
-        when(repository.findByUsernameWithTrainers(USERNAME)).thenReturn(Optional.of(trainee));
+        Trainee traineeWithTrainers = TestDataProvider.buildTraineeWithTrainers(new HashSet<>());
+        when(repository.findByUsernameWithTrainers(USERNAME)).thenReturn(Optional.of(traineeWithTrainers));
 
         service.deleteByUsername(USERNAME);
 
-        verify(repository).save(trainee);
-        verify(repository).delete(trainee);
+        verify(repository).save(traineeWithTrainers);
+        verify(repository).delete(traineeWithTrainers);
         verify(workloadClientService, times(1)).notifyTrainingDeleted(any(Training.class));
     }
 
@@ -190,16 +190,16 @@ class TraineeServiceImplTest {
 
     @Test
     void deleteByUsername_shouldDeleteAndNotNotifyWorkload_whenTraineeHasNoTrainings() {
-        Trainee trainee = TestDataProvider.buildTraineeWithTrainers(new HashSet<>()).toBuilder()
+        Trainee traineeWithTrainers = TestDataProvider.buildTraineeWithTrainers(new HashSet<>()).toBuilder()
                 .trainings(Set.of())
                 .build();
 
-        when(repository.findByUsernameWithTrainers(USERNAME)).thenReturn(Optional.of(trainee));
+        when(repository.findByUsernameWithTrainers(USERNAME)).thenReturn(Optional.of(traineeWithTrainers));
 
         service.deleteByUsername(USERNAME);
 
-        verify(repository).save(trainee);
-        verify(repository).delete(trainee);
+        verify(repository).save(traineeWithTrainers);
+        verify(repository).delete(traineeWithTrainers);
         verify(workloadClientService, never()).notifyTrainingDeleted(any());
     }
 
