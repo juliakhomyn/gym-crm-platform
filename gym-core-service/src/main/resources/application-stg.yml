@@ -11,3 +11,15 @@ logging:
     root: INFO
     org.springframework: INFO
     com.gym.crm: INFO
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL}
+  instance:
+    prefer-ip-address: true
+
+app:
+  services:
+    workload:
+      url: ${WORKLOAD_SERVICE_URL}

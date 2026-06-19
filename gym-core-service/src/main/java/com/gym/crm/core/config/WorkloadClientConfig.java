@@ -2,8 +2,10 @@ package com.gym.crm.core.config;
 
 import com.gym.crm.core.client.TrainerWorkloadClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.client.RestClientBuilderConfigurer;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
 import org.springframework.boot.web.client.ClientHttpRequestFactorySettings;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
@@ -14,6 +16,12 @@ import java.time.Duration;
 
 @Configuration
 public class WorkloadClientConfig {
+
+    @Bean
+    @LoadBalanced
+    public RestClient.Builder restClientBuilder(RestClientBuilderConfigurer configurer) {
+        return configurer.configure(RestClient.builder());
+    }
 
     @Bean
     public TrainerWorkloadClient workloadClient(RestClient.Builder restClientBuilder,

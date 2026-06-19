@@ -62,6 +62,22 @@ REDIS_HOST=localhost
 REDIS_PORT=6379
 ```
 
+### JWT Configuration
+```text
+JWT_SECRET=your_jwt_secret_key
+```
+
+### CORS Configuration
+```text
+CORS_ALLOWED_ORIGINS=http://localhost:3000 
+```
+
+### Microservice URLs
+```text
+WORKLOAD_SERVICE_URL=http://workload-service:8081/workload-service/api/v1   # Base URL for the workload microservice
+DISCOVERY_SERVICE_URL=http://localhost:8761/eureka/                         # Eureka discovery server URL
+```
+
 ### Spring Profiles
 If you want to use specific environment, you can configure it by adding:
 
@@ -82,6 +98,17 @@ mvn test
 ```
 
 ## 7. Run services from console
+
+To work successfully, services have to be run in the following order.
+
+### discovery-service
+
+```bash
+cd discovery-service
+mvn spring-boot:run
+```
+
+Available at: http://localhost:8761
 
 ### gym-core-service
 
