@@ -1,5 +1,6 @@
 package com.gym.crm.core.service.impl;
 
+import com.gym.crm.core.client.TrainerWorkloadClientService;
 import com.gym.crm.core.facade.dto.trainee.TraineeInfoDTO;
 import com.gym.crm.core.facade.dto.trainee.TraineeRequestDTO;
 import com.gym.crm.core.facade.dto.trainee.TraineeResponseDTO;
@@ -37,6 +38,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final UserProfileService userProfileService;
     private final TraineeMapper mapper;
     private final TrainerMapper trainerMapper;
+    private final TrainerWorkloadClientService workloadClient;
 
     @Transactional
     @Override
@@ -105,6 +107,8 @@ public class TraineeServiceImpl implements TraineeService {
         repository.save(trainee);
         repository.delete(trainee);
         log.info("Trainee deleted successfully: username={}", username);
+
+        trainee.getTrainings().forEach(workloadClient::notifyTrainingDeleted);
     }
 
     @Transactional(readOnly = true)

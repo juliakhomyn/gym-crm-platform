@@ -120,6 +120,14 @@ class AuthorizationIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = TRAINER_USERNAME)
+    void deleteTraining_shouldFail_whenUsernameDoesNotMatchPrincipal() {
+        AccessDeniedException exception = assertThrows(AccessDeniedException.class, () -> gymFacade.deleteTraining(1L, TRAINER_USERNAME));
+
+        assertThat(exception.getMessage()).contains("Access Denied");
+    }
+
+    @Test
     @WithMockUser(username = TRAINEE_USERNAME)
     void getTraineeTrainingsByFilter_shouldSucceed_whenUsernameMatchesPrincipal() {
         TraineeTrainingFilter filter = TestDataProvider.buildTraineeTrainingFilter();

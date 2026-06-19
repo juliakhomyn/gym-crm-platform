@@ -1,5 +1,6 @@
 package com.gym.crm.core.service.impl;
 
+import com.gym.crm.core.client.TrainerWorkloadClientService;
 import com.gym.crm.core.facade.dto.training.TrainingRequestDTO;
 import com.gym.crm.core.facade.dto.training.TrainingResponseDTO;
 import com.gym.crm.core.facade.dto.training.TrainingTypeDTO;
@@ -19,6 +20,7 @@ import com.gym.crm.core.search.filter.TrainerTrainingFilter;
 import com.gym.crm.core.service.TrainingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,7 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainerRepository trainerRepository;
     private final TrainingTypeRepository trainingTypeRepository;
     private final TrainingMapper mapper;
+    private final TrainerWorkloadClientService workloadClient;
 
     @Transactional
     @Override
@@ -63,7 +66,28 @@ public class TrainingServiceImpl implements TrainingService {
         Training saved = trainingRepository.save(training);
         log.info("Training created successfully: id={}", saved.getId());
 
+        workloadClient.notifyTrainingAdded(saved);
+
         return mapper.toDto(saved);
+    }
+
+    @Transactional
+    @Override
+    public void deleteById(Long id, String authenticatedTrainerUsername) {
+        log.info("Deleting training by id: id={}", id);
+        Training training = trainingRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(TRAINING_NOT_FOUND_BY_ID, id)));
+
+        String trainingTrainerUsername = training.getTrainer().getUser().getUsername();
+        if (!trainingTrainerUsername.equals(authenticatedTrainerUsername)) {
+            log.warn("Access Denied: User {} is not the trainer of training with id {}", authenticatedTrainerUsername, id);
+            throw new AccessDeniedException("Access Denied: You are not the trainer of this training");
+        }
+
+        trainingRepository.delete(training);
+        log.info("Training deleted successfully: id={}", id);
+
+        workloadClient.notifyTrainingDeleted(training);
     }
 
     @Transactional(readOnly = true)

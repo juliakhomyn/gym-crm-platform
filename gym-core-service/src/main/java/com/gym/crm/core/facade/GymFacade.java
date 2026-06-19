@@ -196,6 +196,11 @@ public class GymFacade {
         trainingService.createTraining(dto);
     }
 
+    @PreAuthorize("#username == authentication.principal.username")
+    public void deleteTraining(Long id, String trainerUsername) {
+        trainingService.deleteById(id, trainerUsername);
+    }
+
     @PreAuthorize("#filter.username == authentication.principal.username")
     public List<GetTraineeTrainingResponse> getTraineeTrainingsByFilter(TraineeTrainingFilter filter) {
         return trainingService.getTraineeTrainings(filter).stream()

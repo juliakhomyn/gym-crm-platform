@@ -379,8 +379,19 @@ public class TestDataProvider {
     }
 
     public static Trainee buildTraineeWithTrainers(Set<Trainer> trainers) {
+        Training training = Training.builder()
+                .id(1L)
+                .trainingName(TRAINING_NAME)
+                .trainingDate(TRAINING_DATE)
+                .trainingDuration(TRAINING_DURATION)
+                .trainingType(buildTrainingType())
+                .trainee(buildTrainee())
+                .trainer(buildTrainer())
+                .build();
+
         return buildTrainee().toBuilder()
                 .trainers(trainers)
+                .trainings(Set.of(training))
                 .build();
     }
 
