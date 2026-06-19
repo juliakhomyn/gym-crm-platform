@@ -17,10 +17,9 @@ public class WorkloadClientConfig {
 
     @Bean
     public TrainerWorkloadClient workloadClient(RestClient.Builder restClientBuilder,
-            @Value("${app.services.workload.url}") String workloadUrl,
-            @Value("${app.services.workload.connect-timeout-ms}") int connectTimeoutMs,
-            @Value("${app.services.workload.read-timeout-ms}") int readTimeoutMs) {
-
+                                                @Value("${app.services.workload.url}") String workloadUrl,
+                                                @Value("${app.services.workload.connect-timeout-ms}") int connectTimeoutMs,
+                                                @Value("${app.services.workload.read-timeout-ms}") int readTimeoutMs) {
         ClientHttpRequestFactorySettings settings = ClientHttpRequestFactorySettings.DEFAULTS
                 .withConnectTimeout(Duration.ofMillis(connectTimeoutMs))
                 .withReadTimeout(Duration.ofMillis(readTimeoutMs));
