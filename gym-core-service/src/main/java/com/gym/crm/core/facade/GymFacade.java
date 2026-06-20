@@ -196,7 +196,7 @@ public class GymFacade {
         trainingService.createTraining(dto);
     }
 
-    @PreAuthorize("#username == authentication.principal.username")
+    @PreAuthorize("#trainerUsername == authentication.principal.username")
     public void deleteTraining(Long id, String trainerUsername) {
         trainingService.deleteById(id, trainerUsername);
     }

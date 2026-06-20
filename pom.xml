@@ -17,6 +17,7 @@
     <modules>
         <module>gym-core-service</module>
         <module>workload-service</module>
+        <module>discovery-service</module>
     </modules>
 
     <properties>
@@ -29,7 +30,20 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.exclusions>**/config/**</sonar.coverage.exclusions>
         <sonar.exclusions>**/config/**</sonar.exclusions>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
