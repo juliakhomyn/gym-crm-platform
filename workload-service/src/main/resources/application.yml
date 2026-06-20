@@ -5,7 +5,7 @@ spring:
 server:
   port: 8081
   servlet:
-    context-path: /workload-service
+    context-path: /gym-crm/workload
 
 app:
   api:
@@ -15,3 +15,16 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
