@@ -365,7 +365,7 @@
               "query": [
                 {
                   "key": "username",
-                  "value": "billy.herrington",
+                  "value": "billy.herrington"
                 },
                 {
                   "key": "fromDate",
