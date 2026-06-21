@@ -1,8 +1,15 @@
-# Gym CRM Application
+# Gym CRM Platform
 
 ![Build](https://github.com/juliakhomyn/gym-crm-platform/actions/workflows/ci.yml/badge.svg?branch=develop)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=juliakhomyn_gym-crm-platform&metric=coverage)](https://sonarcloud.io/summary/overall?id=juliakhomyn_gym-crm-platform)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=juliakhomyn_gym-crm-platform&metric=alert_status)](https://sonarcloud.io/summary/overall?id=juliakhomyn_gym-crm-platform)
+
+## Platform Services
+
+* **[Discovery Service](discovery-service/README.md)**: Provides service discovery for the microservices ecosystem using Netflix Eureka. All other microservices register themselves with this service, enabling dynamic discovery and load balancing.
+* **[Gateway Service](gateway-service/README.md)**: Routes external requests to the appropriate microservice using Spring Cloud Gateway and Eureka service discovery.
+* **[Workload Service](workload-service/README.md)**: Manages trainer workload data.
+* **[Gym Core Service](gym-core-service/README.md)**: The core service for the CRM system, managing trainees, trainers, training sessions, and user authentication.
 
 ## Prerequisites
 
@@ -14,123 +21,37 @@ To run this application, you should have the following installed:
 - **Redis**
 - **MySQL Server**
 
-## 1. Clone the project
+## Platform Setup
+
+### 1. Clone the project
 
 ```bash
 git clone https://github.com/juliakhomyn/gym-crm-platform.git
 cd gym-crm-platform
 ```
 
-## 2. Database Setup MySQL
-Run the following script to create the database and add a user:
-
-```sql
-CREATE DATABASE gym_db;
-CREATE USER 'gymuser'@'localhost' IDENTIFIED BY 'gympass';
-GRANT ALL PRIVILEGES ON gym_db.* TO 'gymuser'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-## 3. Redis Setup
-Make sure Redis is installed and running on your machine.
-
-* On macOS, you can install Redis using Homebrew:
-```bash
-brew install redis
-brew services start redis
-```
-* On Ubuntu/Debian:
-```bash
-sudo apt-get install redis-server
-sudo systemctl start redis
-```
-* Or download from https://redis.io/download
-
-## 4. Environment Variables
-Set the following environment variables before running the application:
-
-### Database Configuration
-```text
-DB_URL=jdbc:mysql://localhost:3306/gym_db
-DB_USERNAME=gymuser
-DB_PASSWORD=gympass
-```
-
-### Redis Configuration
-```text
-REDIS_HOST=localhost
-REDIS_PORT=6379
-```
-
-### JWT Configuration
-```text
-JWT_SECRET=your_jwt_secret_key
-```
-
-### CORS Configuration
-```text
-CORS_ALLOWED_ORIGINS=http://localhost:3000 
-```
-
-### Microservice URLs
-```text
-WORKLOAD_SERVICE_URL=http://workload-service:8081/workload-service/api/v1   # Base URL for the workload microservice
-DISCOVERY_SERVICE_URL=http://localhost:8761/eureka/                         # Eureka discovery server URL
-```
-
-### Spring Profiles
-If you want to use specific environment, you can configure it by adding:
-
-```text
-SPRING_PROFILES_ACTIVE=dev
-```
-
-## 5. Build the project
+### 2. Build the project
 
 ```bash
 mvn clean compile
 ```
 
-## 6. Run tests
+### 3. Run tests
 
 ```bash
 mvn test
 ```
 
-## 7. Run services from console
+### 4. Run services
 
 To work successfully, services have to be run in the following order.
 
-### discovery-service
+1. **[Discovery Service](discovery-service/README.md)** (Eureka Server, port `8761`)
+2. **[Gateway Service](gateway-service/README.md)** (Port `8080`)
+3. **[Workload Service](workload-service/README.md)** (Port `8081`)
+4. **[Gym Core Service](gym-core-service/README.md)** (Port `8082`)
 
-```bash
-cd discovery-service
-mvn spring-boot:run
-```
-
-Available at: http://localhost:8761
-
-### gym-core-service
-
-```bash
-cd gym-core-service
-mvn spring-boot:run
-```
-
-After startup, service will be available at:
-
-* Base API Path: http://localhost:8080/gym-crm/api/v1
-* OpenAPI / Swagger UI: http://localhost:8080/gym-crm/swagger-ui/index.html
-* OpenAPI Spec (JSON): http://localhost:8080/gym-crm/v3/api-docs
-
-### workload-service
-
-```bash
-cd workload-service
-mvn spring-boot:run
-```
-
-Available at: http://localhost:8081
+Please refer to individual service documentation for specific setup and configuration requirements.
 
 ## Postman Collection
 
@@ -144,25 +65,4 @@ docs/postman/gym-crm.postman_collection.json
 
 Spring Boot Actuator and Micrometer are configured to expose system and custom metrics.
 
-Base local URL: http://localhost:8080/gym-crm/actuator
-
-### Health:
-
-* Database Health: http://localhost:8080/gym-crm/actuator/health/database
-* Disk Space Health: http://localhost:8080/gym-crm/actuator/health/diskSpace
-* Memory Health: http://localhost:8080/gym-crm/actuator/health/memory
-* Prometheus metrics: http://localhost:8080/gym-crm/actuator/prometheus
-
-### Custom Metrics
-
-* **User Registrations**: http://localhost:8080/gym-crm/actuator/metrics/gym.auth.login.attempts
-  * Tags: `type` (trainee, trainer), `status` (success, failure)
-* **Login Attempts**: http://localhost:8080/gym-crm/actuator/metrics/gym.auth.login.attempts
-  * Tags: `status` (success, failure)
-* **Trainings Created**: http://localhost:8080/gym-crm/actuator/metrics/gym.training.creations
-  * Tags: `type` (training type name e.g. Yoga, Pilates)
-  * *Note: Returns 404 until at least one training has been created.*
-* **Active Users**: http://localhost:8080/gym-crm/actuator/metrics/gym.users.active
-  * Tags: `type` (trainee, trainer)
-* **Total Users**: http://localhost:8080/gym-crm/actuator/metrics/gym.users.total
-  * Tags: `type` (trainee, trainer)
+Base local URL: http://localhost:8080/actuator

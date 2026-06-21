@@ -22,6 +22,39 @@
             ],
             "body": {
               "mode": "raw",
+              "raw": "{\n  \"username\": \"Billy.Herrington\",\n  \"password\": \"vdi9jOhsBt\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}{{coreUrl}}/auth/login",
+              "host": [
+                "{{gatewayUrl}}{{coreUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\n  \"username\": \"ricardo.milos\",\n  \"password\": \"123456\"\n}",
               "options": {
                 "raw": {
@@ -30,13 +63,13 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/auth/login",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/auth/logout",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "auth",
-                "login"
+                "logout"
               ]
             }
           },
@@ -55,7 +88,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"ricardo.milos\",\n  \"oldPassword\": \"123456\",\n  \"newPassword\": \"654321\"\n}",
+              "raw": "{\n  \"username\": \"Billy.Herrington\",\n  \"oldPassword\": \"e7xDeTb4V0\",\n  \"newPassword\": \"e7xDeTb4V00\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -63,9 +96,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/auth/password",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/auth/password",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "auth",
@@ -93,7 +126,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Billy\",\n  \"lastName\": \"Herrington\",\n  \"dateOfBirth\": \"2000-03-22\",\n  \"address\": \"420 Oak St\"\n}",
+              "raw": "{\n  \"firstName\": \"Billy\",\n  \"dateOfBirth\": \"2000-03-22\",\n  \"address\": \"240 New St\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -101,9 +134,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainees/register",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainees/register",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainees",
@@ -131,9 +164,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainees/Billy.Herrington",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainees/Billy.Herrington",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainees",
@@ -156,7 +189,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Jason\",\n  \"lastName\": \"Statham\",\n  \"dateOfBirth\": \"1967-07-26\",\n  \"address\": \"456 Action Ave, London\",\n  \"isActive\": false\n}",
+              "raw": "{\n    \"firstName\": \"Billy\",\n    \"lastName\": \"Herrington\",\n    \"dateOfBirth\": \"2000-03-22\",\n  \"address\": \"456 Action Ave, London\",\n  \"isActive\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -164,9 +197,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainees/Billy.Herrington",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainees/Billy.Herrington",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainees",
@@ -191,9 +224,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainees/Billy.Herrington",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainees/Billy.Herrington",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainees",
@@ -289,9 +322,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainees/Billy.Herrington/activation",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainees/Billy.Herrington/activation",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainees",
@@ -320,9 +353,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainees/Billy.Herrington/trainings?username=billy.herington&fromDate=2025-07-14&toDate=2025-07-31&trainerName=Simone Radcliffe&trainingType=Cardio",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainees/Billy.Herrington/trainings?username=billy.herington&fromDate=2025-07-14&toDate=2025-07-31&trainerName=Simone Radcliffe&trainingType=Cardio",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainees",
@@ -332,7 +365,7 @@
               "query": [
                 {
                   "key": "username",
-                  "value": "billy.herington"
+                  "value": "billy.herrington"
                 },
                 {
                   "key": "fromDate",
@@ -381,9 +414,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainers/register",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainers/register",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainers",
@@ -411,9 +444,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainers/Billy.Herrington",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainers/Billy.Herrington",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainers",
@@ -436,7 +469,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Ricardo\",\n  \"lastName\": \"Milos\",\n  \"specialization\": \"Yoga\",\n  \"isActive\": true\n}",
+              "raw": "{\n  \"firstName\": \"Billy\",\n  \"lastName\": \"Herrington\",\n  \"specialization\": \"Yoga\",\n  \"isActive\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -444,9 +477,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainers/Billy.Herrington",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainers/Billy.Herrington",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainers",
@@ -477,9 +510,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainers/Billy.Herrington/activation",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainers/Billy.Herrington/activation",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainers",
@@ -508,9 +541,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainers/Billy.Herrington/trainings?fromDate=2024-01-01&toDate=2024-01-31&traineeName=Simone Radcliffe",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainers/Billy.Herrington/trainings",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainers",
@@ -520,11 +553,11 @@
               "query": [
                 {
                   "key": "fromDate",
-                  "value": "2024-01-01"
+                  "value": "2025-01-01"
                 },
                 {
                   "key": "toDate",
-                  "value": "2024-01-31"
+                  "value": "2026-01-01"
                 },
                 {
                   "key": "traineeName",
@@ -561,12 +594,45 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainings",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainings",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete training",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trainingName\": \"Morning Cardio\",\n  \"trainingDate\": \"2025-07-20\",\n  \"trainingDuration\": 55,\n  \"traineeUsername\": \"billy.herrington\",\n  \"trainerUsername\": \"ricardo.milos\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainings/19",
+              "host": [
+                "{{gatewayUrl}}{{coreUrl}}"
+              ],
+              "path": [
+                "trainings",
+                "19"
               ]
             }
           },
@@ -590,13 +656,111 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/trainings/types",
+              "raw": "{{gatewayUrl}}{{coreUrl}}/trainings/types",
               "host": [
-                "{{baseUrl}}"
+                "{{gatewayUrl}}{{coreUrl}}"
               ],
               "path": [
                 "trainings",
                 "types"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Workload",
+      "item": [
+        {
+          "name": "Get workload",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gatewayUrl}}{{workloadUrl}}/trainers/workload/Billy.Herrington?year=2025&month=7",
+              "host": [
+                "{{gatewayUrl}}{{workloadUrl}}"
+              ],
+              "path": [
+                "trainers",
+                "workload",
+                "Billy.Herrington"
+              ],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "2025"
+                },
+                {
+                  "key": "month",
+                  "value": "7"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add workload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trainerUsername\": \"Billy.Herrington\",\n  \"trainerFirstName\": \"Billy\",\n  \"trainerLastName\": \"Herrington\",\n  \"isActive\": true,\n  \"trainingDate\": \"2026-03-01\",\n  \"trainingDuration\": 90,\n  \"actionType\": \"ADD\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}{{workloadUrl}}/trainers/workload",
+              "host": [
+                "{{gatewayUrl}}{{workloadUrl}}"
+              ],
+              "path": [
+                "trainers",
+                "workload"
+              ],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "2026"
+                },
+                {
+                  "key": "month",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete workload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trainerUsername\": \"Billy.Herrington\",\n  \"trainerFirstName\": \"Billy\",\n  \"trainerLastName\": \"Herrington\",\n  \"isActive\": true,\n  \"trainingDate\": \"2026-03-01\",\n  \"trainingDuration\": 200,\n  \"actionType\": \"DELETE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{gatewayUrl}}{{workloadUrl}}/trainers/workload",
+              "host": [
+                "{{gatewayUrl}}{{workloadUrl}}"
+              ],
+              "path": [
+                "trainers",
+                "workload"
               ]
             }
           },
@@ -631,8 +795,16 @@
   ],
   "variable": [
     {
-      "key": "baseUrl",
-      "value": "http://localhost:8080/gym-crm/api/v1"
+      "key": "gatewayUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "coreUrl",
+      "value": "/gym-crm/core/api/v1"
+    },
+    {
+      "key": "workloadUrl",
+      "value": "/gym-crm/workload/api/v1"
     }
   ]
 }
