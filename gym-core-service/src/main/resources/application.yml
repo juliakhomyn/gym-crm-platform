@@ -56,3 +56,11 @@ eureka:
   client:
     registerWithEureka: true
     fetchRegistry: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      workloadService:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s

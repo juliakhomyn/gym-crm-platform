@@ -8,10 +8,20 @@ spring:
           uri: lb://gym-core-service
           predicates:
             - Path=/gym-crm/core/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: gymCoreCircuitBreaker
+                fallbackUri: forward:/fallback/core
         - id: workload-service
           uri: lb://workload-service
           predicates:
             - Path=/gym-crm/workload/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: workloadCircuitBreaker
+                fallbackUri: forward:/fallback/workload
 
 server:
   port: 8080
@@ -34,3 +44,15 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      gymCoreCircuitBreaker:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+      workloadCircuitBreaker:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s

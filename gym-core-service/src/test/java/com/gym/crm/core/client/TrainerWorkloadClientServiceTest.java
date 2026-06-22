@@ -18,6 +18,8 @@ import java.time.Month;
 import static com.gia.openapi.model.ActionType.ADD;
 import static com.gia.openapi.model.ActionType.DELETE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -69,7 +71,7 @@ class TrainerWorkloadClientServiceTest {
     void sendUpdate_shouldLogResourceAccessException() {
         doThrow(new ResourceAccessException("Timeout")).when(client).updateTrainerWorkload(any());
 
-        service.notifyTrainingAdded(training);
+        assertThrows(RuntimeException.class, () -> service.notifyTrainingAdded(training));
 
         verify(client).updateTrainerWorkload(any());
     }
@@ -78,8 +80,13 @@ class TrainerWorkloadClientServiceTest {
     void sendUpdate_shouldLogRestClientException() {
         doThrow(new RestClientException("REST error")).when(client).updateTrainerWorkload(any());
 
-        service.notifyTrainingDeleted(training);
+        assertThrows(RuntimeException.class, () -> service.notifyTrainingAdded(training));
 
         verify(client).updateTrainerWorkload(any());
+    }
+
+    @Test
+    void sendUpdate_shouldNotThrow_whenFallbackIsCalled() {
+        assertDoesNotThrow(() -> service.fallbackNotifyTrainingUpdate(training, new RuntimeException("API error")));
     }
 }
