@@ -26,6 +26,7 @@ import static com.gym.crm.core.exception.ApiError.VALIDATION_ERROR;
 @RestControllerAdvice
 public class ApiExceptionHandler {
     private static final String VALIDATION_ERROR_LOG_MESSAGE = "Validation error: {}";
+    private static final String WORKLOAD_SERVICE = "workload-service";
 
     @ExceptionHandler(ValidationFailedException.class)
     public ResponseEntity<ErrorResponse> handleValidationFailedException(ValidationFailedException ex) {
@@ -94,6 +95,22 @@ public class ApiExceptionHandler {
         log.warn("Requested data was not found: {}", ex.getMessage());
 
         return buildErrorResponse(NOT_FOUND_ERROR, ex.getMessage());
+    }
+
+    @ExceptionHandler(ServiceTimeoutException.class)
+    public ResponseEntity<ErrorResponse> handleServiceTimeoutException(ServiceTimeoutException ex) {
+        String message = String.format("%s did not respond within 3s", WORKLOAD_SERVICE);
+        log.warn("Timeout: {}", message, ex);
+
+        return buildErrorResponse(ApiError.TIMEOUT_ERROR, message);
+    }
+
+    @ExceptionHandler(ServiceConnectionException.class)
+    public ResponseEntity<ErrorResponse> handleServiceException(ServiceConnectionException ex) {
+        String message = String.format("Cannot connect to %s", WORKLOAD_SERVICE);
+        log.warn("Connection error: {}", message, ex);
+
+        return buildErrorResponse(ApiError.CONNECTION_ERROR, message);
     }
 
     @ExceptionHandler(PersistenceException.class)

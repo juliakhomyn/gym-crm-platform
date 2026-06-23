@@ -155,6 +155,32 @@ class ApiExceptionHandlerTest {
     }
 
     @Test
+    void handleServiceTimeoutException_shouldReturnErrorResponse() {
+        ServiceTimeoutException exception = new ServiceTimeoutException("Timeout occurred");
+
+        ResponseEntity<ErrorResponse> response = handler.handleServiceTimeoutException(exception);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode().value()).isEqualTo(504);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ApiError.TIMEOUT_ERROR.getCode());
+        assertThat(response.getBody().getErrorMessage()).isEqualTo("Timeout: workload-service did not respond within 3s");
+    }
+
+    @Test
+    void handleServiceException_shouldReturnErrorResponse() {
+        ServiceConnectionException exception = new ServiceConnectionException("Connection error");
+
+        ResponseEntity<ErrorResponse> response = handler.handleServiceException(exception);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode().value()).isEqualTo(503);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ApiError.CONNECTION_ERROR.getCode());
+        assertThat(response.getBody().getErrorMessage()).isEqualTo("Connection error: Cannot connect to workload-service");
+    }
+
+    @Test
     void handlePersistenceException_shouldReturnErrorResponse() {
         PersistenceException exception = new PersistenceException();
 
