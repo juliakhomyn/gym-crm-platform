@@ -41,7 +41,7 @@ public class ClientRequestInterceptor implements ClientHttpRequestInterceptor {
         if (authHeader != null) {
             request.getHeaders().set(HttpHeaders.AUTHORIZATION, authHeader);
 
-            log.info("Propagating Authorization header to downstream request: {}", authHeader);
+            log.info("Propagating Authorization header to downstream request");
         } else {
             log.info("No Authorization header found in incoming request to propagate.");
         }

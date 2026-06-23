@@ -138,12 +138,10 @@ public class TrainerWorkloadServiceImpl implements TrainerWorkloadService {
 
         if (action == DELETE) {
             if (currentDuration == 0) {
-                log.warn(
-                        "Attempt to delete workload from empty month: username={}, year={}, month={}, requestedDuration={}",
+                log.warn("Attempt to delete workload from empty month: username={}, year={}, month={}, requestedDuration={}",
                         dto.getTrainerUsername(), year, month, dto.getTrainingDuration());
             } else if (dto.getTrainingDuration() > currentDuration) {
-                log.warn(
-                        "Attempt to delete more workload than exists: username={}, year={}, month={}, currentDuration={}, requestedDuration={}",
+                log.warn("Attempt to delete more workload than exists: username={}, year={}, month={}, currentDuration={}, requestedDuration={}",
                         dto.getTrainerUsername(), year, month, currentDuration, dto.getTrainingDuration());
             }
         }
