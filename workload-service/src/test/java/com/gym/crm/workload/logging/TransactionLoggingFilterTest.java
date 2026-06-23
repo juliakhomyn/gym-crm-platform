@@ -87,10 +87,10 @@ class TransactionLoggingFilterTest {
         filter.doFilterInternal(request, response, chain);
         filter.doFilterInternal(request1, response1, chain1);
 
-        String id = response.getHeader(TRACE_HEADER);
-        String id1 = response1.getHeader(TRACE_HEADER);
-        assertThat(id).isNotNull();
+        String id1 = response.getHeader(TRACE_HEADER);
+        String id2 = response1.getHeader(TRACE_HEADER);
         assertThat(id1).isNotNull();
-        assertThat(id).isNotEqualTo(id1);
+        assertThat(id2).isNotNull();
+        assertThat(id1).isNotEqualTo(id2);
     }
 }
