@@ -15,19 +15,27 @@ git clone https://github.com/juliakhomyn/gym-crm-platform.git
 cd workload-service
 ```
 
-## 2. Build the project
+## 2. Set Environment Variables
+Set the following environment variables before running the application:
+
+### JWT Configuration
+```text
+JWT_SECRET=your_jwt_secret_key
+```
+
+## 3. Build the project
 
 ```bash
 mvn clean compile
 ```
 
-## 3. Run tests
+## 4. Run tests
 
 ```bash
 mvn test
 ```
 
-## 4. Run Discovery service (if not ran yet)
+## 5. Run Discovery service (if not ran yet)
 
 In a separate terminal:
 
@@ -38,7 +46,7 @@ mvn spring-boot:run
 
 Available at: http://localhost:8761
 
-## 4. Run the service from console
+## 6. Run the service from console
 
 ```bash
 mvn spring-boot:run

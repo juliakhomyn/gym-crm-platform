@@ -1,6 +1,7 @@
 package com.gym.crm.core.config;
 
 import com.gym.crm.core.client.TrainerWorkloadClient;
+import com.gym.crm.core.security.JwtPropagationInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.client.RestClientBuilderConfigurer;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
@@ -8,8 +9,11 @@ import org.springframework.boot.web.client.ClientHttpRequestFactorySettings;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 import java.time.Duration;
@@ -20,11 +24,19 @@ public class WorkloadClientConfig {
     @Bean
     @LoadBalanced
     public RestClient.Builder restClientBuilder(RestClientBuilderConfigurer configurer) {
-        return configurer.configure(RestClient.builder());
+        return configurer.configure(RestClient.builder())
+                .requestInterceptor((request, body, execution) -> {
+                    String authHeader = getCurrentAuthorizationHeader();
+                    if (authHeader != null) {
+                        request.getHeaders().set(HttpHeaders.AUTHORIZATION, authHeader);
+                    }
+                    return execution.execute(request, body);
+                });
     }
 
     @Bean
     public TrainerWorkloadClient workloadClient(RestClient.Builder restClientBuilder,
+                                                JwtPropagationInterceptor jwtPropagationInterceptor,
                                                 @Value("${app.services.workload.url}") String workloadUrl,
                                                 @Value("${app.services.workload.connect-timeout-ms}") int connectTimeoutMs,
                                                 @Value("${app.services.workload.read-timeout-ms}") int readTimeoutMs) {
@@ -34,6 +46,7 @@ public class WorkloadClientConfig {
 
         RestClient restClient = restClientBuilder
                 .baseUrl(workloadUrl)
+                .requestInterceptor(jwtPropagationInterceptor)
                 .requestFactory(ClientHttpRequestFactories.get(settings))
                 .build();
 
@@ -47,5 +60,14 @@ public class WorkloadClientConfig {
                 .build();
 
         return factory.createClient(clientClass);
+    }
+
+    private String getCurrentAuthorizationHeader() {
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attrs == null) {
+            return null;
+        }
+
+        return attrs.getRequest().getHeader(HttpHeaders.AUTHORIZATION);
     }
 }
