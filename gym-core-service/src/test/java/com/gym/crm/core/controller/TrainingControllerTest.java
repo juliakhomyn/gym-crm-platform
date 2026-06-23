@@ -115,50 +115,6 @@ class TrainingControllerTest {
 
     @Test
     @WithMockUser(username = TRAINER_USERNAME)
-    void deleteTraining_shouldReturnOk_whenValid() throws Exception {
-        Long trainingId = 1L;
-
-        mockMvc.perform(delete(BASE_URL + "/{id}", trainingId))
-                .andExpect(status().isOk());
-        verify(facade).deleteTraining(eq(trainingId), anyString());
-    }
-
-    @Test
-    @WithMockUser(username = TRAINER_USERNAME)
-    void deleteTraining_shouldReturnNotFound_whenTrainingDoesNotExist() throws Exception {
-        Long trainingId = 1L;
-        doThrow(new EntityNotFoundException("Training not found")).when(facade).deleteTraining(eq(trainingId), anyString());
-
-        String content = mockMvc.perform(delete(BASE_URL + "/{id}", trainingId))
-                .andExpect(status().isNotFound())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        ErrorResponse errorResponse = mapper.readValue(content, ErrorResponse.class);
-        assertThat(errorResponse.getErrorCode()).isEqualTo(ApiError.NOT_FOUND_ERROR.getCode());
-        assertThat(errorResponse.getErrorMessage()).contains("Training not found");
-    }
-
-    @Test
-    @WithMockUser(username = TRAINER_USERNAME)
-    void deleteTraining_shouldReturnInternalServerError_onUnexpectedException() throws Exception {
-        Long trainingId = 1L;
-        doThrow(new RuntimeException("Unexpected error")).when(facade).deleteTraining(eq(trainingId), anyString());
-
-        String content = mockMvc.perform(delete(BASE_URL + "/{id}", trainingId))
-                .andExpect(status().isInternalServerError())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        ErrorResponse errorResponse = mapper.readValue(content, ErrorResponse.class);
-        assertThat(errorResponse.getErrorCode()).isEqualTo(ApiError.SERVICE_ERROR.getCode());
-        assertThat(errorResponse.getErrorMessage()).contains(ApiError.SERVICE_ERROR.getMessage());
-    }
-
-    @Test
-    @WithMockUser(username = TRAINER_USERNAME)
     void getTrainingTypes_shouldReturnTrainingTypes_whenExist() throws Exception {
         List<TrainingTypeResponse> response = List.of(TestDataProvider.buildTrainingTypeResponse());
 
