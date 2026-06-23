@@ -23,18 +23,18 @@ public class TransactionLoggingFilter extends OncePerRequestFilter {
     private static final String TRACE_HEADER = "X-Trace-Id";
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        String traceId = request.getHeader(TRACE_HEADER);
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
+        String traceId = req.getHeader(TRACE_HEADER);
 
         if (traceId == null || traceId.isBlank()) {
             traceId = UUID.randomUUID().toString();
         }
 
         MDC.put(TRANSACTION_ID, traceId);
-        response.setHeader(TRACE_HEADER, traceId);
+        res.setHeader(TRACE_HEADER, traceId);
 
         try {
-            chain.doFilter(request, response);
+            chain.doFilter(req, res);
         } finally {
             MDC.remove(TRANSACTION_ID);
         }
