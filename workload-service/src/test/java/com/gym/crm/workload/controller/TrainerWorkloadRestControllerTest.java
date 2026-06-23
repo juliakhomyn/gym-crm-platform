@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gym.crm.workload.dto.TrainerWorkloadUpdateDTO;
 import com.gym.crm.workload.mapper.TrainerWorkloadMapper;
 import com.gym.crm.workload.openapi.model.TrainerWorkloadRequest;
+import com.gym.crm.workload.security.JwtService;
 import com.gym.crm.workload.service.TrainerWorkloadService;
 import com.gym.crm.workload.utils.TestDataProvider;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,9 @@ class TrainerWorkloadRestControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private JwtService jwtService;
 
     @MockBean
     private TrainerWorkloadService service;

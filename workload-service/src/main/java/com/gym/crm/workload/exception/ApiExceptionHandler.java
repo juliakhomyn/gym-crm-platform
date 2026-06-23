@@ -56,8 +56,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(
-            EntityNotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
 
         log.warn("Requested data was not found: {}", ex.getMessage());
 
