@@ -1,0 +1,19 @@
+<configuration>
+    <property name="serviceName" value="workload-service"/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} %-5level [%X{transactionId}] [%property{serviceName}] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/workload-service.log</file>
+        <encoder>
+            <pattern>%d{HH:mm:ss} %-5level [%X{transactionId}] [%property{serviceName}] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
