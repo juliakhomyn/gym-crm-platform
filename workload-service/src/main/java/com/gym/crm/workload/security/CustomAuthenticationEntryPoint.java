@@ -22,24 +22,24 @@ import static com.gym.crm.workload.exception.ApiError.AUTHENTICATION_ERROR;
 @RequiredArgsConstructor
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper mapper;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType("application/json");
+    public void commence(HttpServletRequest request, HttpServletResponse resp, AuthenticationException exception) throws IOException {
+        resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        resp.setContentType("application/json");
 
         String message = AUTHENTICATION_ERROR.getMessage() + getErrorMessage(exception);
         log.warn(message);
         ErrorResponse errorResponse = new ErrorResponse(AUTHENTICATION_ERROR.getCode(), message);
-        objectMapper.writeValue(response.getOutputStream(), errorResponse);
+        mapper.writeValue(resp.getOutputStream(), errorResponse);
     }
 
     private String getErrorMessage(AuthenticationException exception) {
         return switch (exception) {
             case DisabledException ignored -> "User is disabled";
-            case LockedException ignored -> "User account is locked";
             case InsufficientAuthenticationException ignored -> "Invalid token";
+            case LockedException ignored -> "User account is locked";
             default -> "Unexpected error";
         };
     }
