@@ -12,10 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.net.ConnectException;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -157,10 +155,10 @@ class ApiExceptionHandlerTest {
     }
 
     @Test
-    void handleTimeoutException_shouldReturnErrorResponse() {
-        TimeoutException exception = new TimeoutException("Timeout occurred");
+    void handleServiceTimeoutException_shouldReturnErrorResponse() {
+        ServiceTimeoutException exception = new ServiceTimeoutException("Timeout occurred");
 
-        ResponseEntity<ErrorResponse> response = handler.handleTimeoutException(exception);
+        ResponseEntity<ErrorResponse> response = handler.handleServiceTimeoutException(exception);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode().value()).isEqualTo(504);
@@ -170,10 +168,10 @@ class ApiExceptionHandlerTest {
     }
 
     @Test
-    void handleConnectException_shouldReturnErrorResponse() {
-        ConnectException exception = new ConnectException("Connection error");
+    void handleServiceException_shouldReturnErrorResponse() {
+        ServiceConnectionException exception = new ServiceConnectionException("Connection error");
 
-        ResponseEntity<ErrorResponse> response = handler.handleConnectException(exception);
+        ResponseEntity<ErrorResponse> response = handler.handleServiceException(exception);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode().value()).isEqualTo(503);

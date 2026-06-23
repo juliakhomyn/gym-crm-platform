@@ -13,8 +13,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.net.ConnectException;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import static com.gym.crm.core.exception.ApiError.AUTHENTICATION_ERROR;
@@ -99,16 +97,16 @@ public class ApiExceptionHandler {
         return buildErrorResponse(NOT_FOUND_ERROR, ex.getMessage());
     }
 
-    @ExceptionHandler(TimeoutException.class)
-    public ResponseEntity<ErrorResponse> handleTimeoutException(TimeoutException ex) {
+    @ExceptionHandler(ServiceTimeoutException.class)
+    public ResponseEntity<ErrorResponse> handleServiceTimeoutException(ServiceTimeoutException ex) {
         String message = String.format("%s did not respond within 3s", WORKLOAD_SERVICE);
         log.warn("Timeout: {}", message, ex);
 
         return buildErrorResponse(ApiError.TIMEOUT_ERROR, message);
     }
 
-    @ExceptionHandler(ConnectException.class)
-    public ResponseEntity<ErrorResponse> handleConnectException(ConnectException ex) {
+    @ExceptionHandler(ServiceConnectionException.class)
+    public ResponseEntity<ErrorResponse> handleServiceException(ServiceConnectionException ex) {
         String message = String.format("Cannot connect to %s", WORKLOAD_SERVICE);
         log.warn("Connection error: {}", message, ex);
 

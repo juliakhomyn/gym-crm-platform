@@ -1,6 +1,8 @@
 package com.gym.crm.core.client;
 
 import com.gia.openapi.model.TrainerWorkloadRequest;
+import com.gym.crm.core.exception.ServiceConnectionException;
+import com.gym.crm.core.exception.ServiceTimeoutException;
 import com.gym.crm.core.model.Training;
 import com.gym.crm.core.utils.TestDataProvider;
 import org.junit.jupiter.api.Test;
@@ -10,18 +12,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.time.LocalDate;
 import java.time.Month;
 
 import static com.gia.openapi.model.ActionType.ADD;
 import static com.gia.openapi.model.ActionType.DELETE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,25 +68,47 @@ class TrainerWorkloadClientServiceTest {
     }
 
     @Test
-    void sendUpdate_shouldLogResourceAccessException() {
-        doThrow(new ResourceAccessException("Timeout")).when(client).updateTrainerWorkload(any());
+    void fallbackNotifyTrainingUpdate_shouldThrowServiceTimeoutException_onSocketTimeout() {
+        SocketTimeoutException cause = new SocketTimeoutException("Timeout");
 
-        assertThrows(RuntimeException.class, () -> service.notifyTrainingAdded(training));
+        ServiceTimeoutException thrown = assertThrows(ServiceTimeoutException.class, () -> service.fallbackNotifyTrainingUpdate(training, cause));
 
-        verify(client).updateTrainerWorkload(any());
+        assertThat(thrown.getMessage()).isEqualTo("workload-service did not respond within 3s");
     }
 
     @Test
-    void sendUpdate_shouldLogRestClientException() {
-        doThrow(new RestClientException("REST error")).when(client).updateTrainerWorkload(any());
+    void fallbackNotifyTrainingUpdate_shouldThrowServiceConnectionException_onConnectException() {
+        ConnectException cause = new ConnectException("Connection refused");
 
-        assertThrows(RuntimeException.class, () -> service.notifyTrainingAdded(training));
+        ServiceConnectionException thrown = assertThrows(ServiceConnectionException.class, () -> service.fallbackNotifyTrainingUpdate(training, cause));
 
-        verify(client).updateTrainerWorkload(any());
+        assertThat(thrown.getMessage()).isEqualTo("Cannot connect to workload-service");
     }
 
     @Test
-    void sendUpdate_shouldNotThrow_whenFallbackIsCalled() {
-        assertDoesNotThrow(() -> service.fallbackNotifyTrainingUpdate(training, new RuntimeException("API error")));
+    void fallbackNotifyTrainingUpdate_shouldThrowServiceConnectionException_onResourceAccessException() {
+        ResourceAccessException cause = new ResourceAccessException("Service unavailable");
+
+        ServiceConnectionException thrown = assertThrows(ServiceConnectionException.class, () -> service.fallbackNotifyTrainingUpdate(training, cause));
+
+        assertThat(thrown.getMessage()).isEqualTo("Cannot connect to workload-service");
+    }
+
+    @Test
+    void fallbackNotifyTrainingUpdate_shouldThrowGenericServiceException_onUnknownException() {
+        RuntimeException cause = new RuntimeException("Unexpected");
+
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> service.fallbackNotifyTrainingUpdate(training, cause));
+
+        assertThat(thrown.getMessage()).isEqualTo("Unexpected error while communicating with workload-service");
+    }
+
+    @Test
+    void fallbackNotifyTrainingUpdate_shouldReturnSameServiceException_whenAlreadyMapped() {
+        ServiceTimeoutException original = new ServiceTimeoutException("workload-service did not respond within 3s");
+
+        ServiceTimeoutException thrown = assertThrows(ServiceTimeoutException.class, () -> service.fallbackNotifyTrainingUpdate(training, original));
+
+        assertThat(thrown).isSameAs(original);
     }
 }
