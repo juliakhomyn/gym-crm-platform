@@ -606,39 +606,6 @@
           "response": []
         },
         {
-          "name": "Delete training",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"trainingName\": \"Morning Cardio\",\n  \"trainingDate\": \"2025-07-20\",\n  \"trainingDuration\": 55,\n  \"traineeUsername\": \"billy.herrington\",\n  \"trainerUsername\": \"ricardo.milos\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{gatewayUrl}}{{coreUrl}}/trainings/19",
-              "host": [
-                "{{gatewayUrl}}{{coreUrl}}"
-              ],
-              "path": [
-                "trainings",
-                "19"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "Get training types",
           "protocolProfileBehavior": {
             "disableBodyPruning": true

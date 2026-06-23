@@ -5,7 +5,7 @@ info:
   version: '1.0'
 
 servers:
-- url: http://localhost:8080/gym-crm/api/v1
+- url: http://localhost:8080/gym-crm/core/api/v1
   description: Local development server
 
 tags:
@@ -169,6 +169,18 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Trainee not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '504':
+          description: Workload Service did not respond within available time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Cannot connect to Workload Service
           content:
             application/json:
               schema:
@@ -631,6 +643,18 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '504':
+          description: Workload Service did not respond within available time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Cannot connect to Workload Service
           content:
             application/json:
               schema:
