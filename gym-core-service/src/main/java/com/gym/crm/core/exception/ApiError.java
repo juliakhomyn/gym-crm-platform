@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.GATEWAY_TIMEOUT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Getter
@@ -16,7 +18,9 @@ public enum ApiError {
     AUTHORIZATION_ERROR(2806, "User is not authorized for request operation: ", FORBIDDEN),
     NOT_FOUND_ERROR(2835, "Requested data was not found: ", NOT_FOUND),
     SERVICE_ERROR(3200, "Internal processing error", INTERNAL_SERVER_ERROR),
-    DATABASE_ERROR(3358, "Unexpected database access failure", INTERNAL_SERVER_ERROR);
+    DATABASE_ERROR(3358, "Unexpected database access failure", INTERNAL_SERVER_ERROR),
+    TIMEOUT_ERROR(3504, "Timeout: ", GATEWAY_TIMEOUT),
+    CONNECTION_ERROR(3503, "Connection error: ", SERVICE_UNAVAILABLE);
 
     private final int code;
     private final String message;

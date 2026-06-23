@@ -12,8 +12,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -152,6 +154,32 @@ class ApiExceptionHandlerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getErrorCode()).isEqualTo(ApiError.NOT_FOUND_ERROR.getCode());
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Requested data was not found: User not found");
+    }
+
+    @Test
+    void handleTimeoutException_shouldReturnErrorResponse() {
+        TimeoutException exception = new TimeoutException("Timeout occurred");
+
+        ResponseEntity<ErrorResponse> response = handler.handleTimeoutException(exception);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode().value()).isEqualTo(504);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ApiError.TIMEOUT_ERROR.getCode());
+        assertThat(response.getBody().getErrorMessage()).isEqualTo("Timeout: workload-service did not respond within 3s");
+    }
+
+    @Test
+    void handleConnectException_shouldReturnErrorResponse() {
+        ConnectException exception = new ConnectException("Connection error");
+
+        ResponseEntity<ErrorResponse> response = handler.handleConnectException(exception);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode().value()).isEqualTo(503);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ApiError.CONNECTION_ERROR.getCode());
+        assertThat(response.getBody().getErrorMessage()).isEqualTo("Connection error: Cannot connect to workload-service");
     }
 
     @Test
