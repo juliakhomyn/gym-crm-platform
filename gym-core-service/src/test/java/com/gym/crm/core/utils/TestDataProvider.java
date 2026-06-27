@@ -1,6 +1,5 @@
 package com.gym.crm.core.utils;
 
-import com.gia.openapi.model.ActionType;
 import com.gia.openapi.model.ActivationStatusRequest;
 import com.gia.openapi.model.AssignedTrainerResponse;
 import com.gia.openapi.model.GetTraineeTrainingResponse;
@@ -19,7 +18,6 @@ import com.gia.openapi.model.TrainerCreateRequest;
 import com.gia.openapi.model.TrainerCreateResponse;
 import com.gia.openapi.model.TrainerUpdateRequest;
 import com.gia.openapi.model.TrainerUpdateResponse;
-import com.gia.openapi.model.TrainerWorkloadRequest;
 import com.gia.openapi.model.AssignedTraineeResponse;
 import com.gia.openapi.model.TrainerGetResponse;
 import com.gia.openapi.model.TrainingCreateRequest;
