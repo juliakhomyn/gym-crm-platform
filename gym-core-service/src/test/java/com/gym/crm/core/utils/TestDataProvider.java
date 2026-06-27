@@ -1,5 +1,6 @@
 package com.gym.crm.core.utils;
 
+import com.gia.openapi.model.ActionType;
 import com.gia.openapi.model.ActivationStatusRequest;
 import com.gia.openapi.model.AssignedTrainerResponse;
 import com.gia.openapi.model.GetTraineeTrainingResponse;
@@ -18,6 +19,7 @@ import com.gia.openapi.model.TrainerCreateRequest;
 import com.gia.openapi.model.TrainerCreateResponse;
 import com.gia.openapi.model.TrainerUpdateRequest;
 import com.gia.openapi.model.TrainerUpdateResponse;
+import com.gia.openapi.model.TrainerWorkloadRequest;
 import com.gia.openapi.model.AssignedTraineeResponse;
 import com.gia.openapi.model.TrainerGetResponse;
 import com.gia.openapi.model.TrainingCreateRequest;
@@ -38,6 +40,7 @@ import com.gym.crm.core.facade.dto.trainer.TrainerUpdateDTO;
 import com.gym.crm.core.facade.dto.training.TrainingRequestDTO;
 import com.gym.crm.core.facade.dto.training.TrainingResponseDTO;
 import com.gym.crm.core.facade.dto.training.TrainingTypeDTO;
+import com.gym.crm.core.messaging.TrainerWorkloadMessage;
 import com.gym.crm.core.model.Trainee;
 import com.gym.crm.core.model.Trainer;
 import com.gym.crm.core.model.Training;
@@ -643,6 +646,48 @@ public class TestDataProvider {
                 .password(PASSWORD)
                 .authorities(Collections.emptyList())
                 .disabled(false)
+                .build();
+    }
+
+    public static TrainerWorkloadRequest buildTrainerWorkloadRequest(Training training, ActionType actionType) {
+        User user = training.getTrainer().getUser();
+
+        return new TrainerWorkloadRequest()
+                .trainerUsername(user.getUsername())
+                .trainerFirstName(user.getFirstName())
+                .trainerLastName(user.getLastName())
+                .isActive(user.getIsActive())
+                .trainingDate(training.getTrainingDate())
+                .trainingDuration(training.getTrainingDuration())
+                .actionType(actionType);
+    }
+
+    public static TrainerWorkloadMessage buildTrainerWorkloadMessage(Training training, com.gym.crm.core.messaging.ActionType actionType) {
+        User user = training.getTrainer().getUser();
+
+        return TrainerWorkloadMessage.builder()
+                .trainerUsername(user.getUsername())
+                .trainerFirstName(user.getFirstName())
+                .trainerLastName(user.getLastName())
+                .isActive(user.getIsActive())
+                .trainingDate(training.getTrainingDate())
+                .trainingDuration(training.getTrainingDuration())
+                .actionType(actionType)
+                .build();
+    }
+
+    public static TrainerWorkloadMessage buildTrainerWorkloadMessage(com.gym.crm.core.messaging.ActionType actionType) {
+        Training training = buildExpectedTraining();
+        User user = training.getTrainer().getUser();
+
+        return TrainerWorkloadMessage.builder()
+                .trainerUsername(user.getUsername())
+                .trainerFirstName(user.getFirstName())
+                .trainerLastName(user.getLastName())
+                .isActive(user.getIsActive())
+                .trainingDate(training.getTrainingDate())
+                .trainingDuration(training.getTrainingDuration())
+                .actionType(actionType)
                 .build();
     }
 }

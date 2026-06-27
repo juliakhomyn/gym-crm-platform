@@ -11,6 +11,7 @@ To run this application, you should have the following installed:
 - **Git**
 - **Redis**
 - **MySQL Server**
+- **ActiveMQ**
 
 ## 1. Clone the project
 
@@ -68,6 +69,13 @@ JWT_SECRET=your_jwt_secret_key
 ### CORS Configuration
 ```text
 CORS_ALLOWED_ORIGINS=http://localhost:3000 
+```
+
+### ActiveMQ Configuration
+```text
+ACTIVEMQ_BROKER_URL=tcp://localhost:61616;
+ACTIVEMQ_USER=gymuser;
+ACTIVEMQ_PASSWORD=gympass
 ```
 
 ### Microservice URLs

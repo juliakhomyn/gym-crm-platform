@@ -1,3 +1,8 @@
+spring:
+  jms:
+    queue:
+      trainer-workload: trainer.workload.queue
+
 app:
   api:
     base-path: /api/v1

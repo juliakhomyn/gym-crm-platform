@@ -11,14 +11,12 @@ import com.gia.openapi.model.TrainerGetResponse;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import com.gym.crm.core.client.TrainerWorkloadClient;
 import com.gym.crm.core.search.filter.TraineeTrainingFilter;
 import com.gym.crm.core.search.filter.TrainerTrainingFilter;
 import com.gym.crm.core.utils.TestDataProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -45,9 +43,6 @@ class AuthorizationIntegrationTest {
 
     @Autowired
     private GymFacade gymFacade;
-
-    @MockBean
-    private TrainerWorkloadClient trainerWorkloadClient;
 
     @Test
     void createTrainee_shouldReturnResponse() {

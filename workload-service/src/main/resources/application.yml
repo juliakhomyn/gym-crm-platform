@@ -1,6 +1,15 @@
 spring:
   application:
     name: workload-service
+  activemq:
+    broker-url: ${ACTIVEMQ_BROKER_URL}
+    user: ${ACTIVEMQ_USER}
+    password: ${ACTIVEMQ_PASSWORD}
+  jms:
+    queue:
+      trainer-workload: trainer.workload.queue
+    listener:
+      concurrency: "3-10"
 
 server:
   port: 8081

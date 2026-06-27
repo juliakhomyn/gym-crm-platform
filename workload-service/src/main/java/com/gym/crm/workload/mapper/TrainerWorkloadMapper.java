@@ -1,5 +1,6 @@
 package com.gym.crm.workload.mapper;
 
+import com.gym.crm.workload.dto.TrainerWorkloadMessage;
 import com.gym.crm.workload.dto.TrainerWorkloadUpdateDTO;
 import com.gym.crm.workload.openapi.model.TrainerWorkloadRequest;
 import org.mapstruct.Mapper;
@@ -8,4 +9,6 @@ import org.mapstruct.Mapper;
 public interface TrainerWorkloadMapper {
 
     TrainerWorkloadUpdateDTO toUpdateDTO(TrainerWorkloadRequest trainerWorkloadRequest);
+
+    TrainerWorkloadUpdateDTO toUpdateDTO(TrainerWorkloadMessage message);
 }

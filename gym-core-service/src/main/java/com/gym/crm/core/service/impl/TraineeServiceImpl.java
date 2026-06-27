@@ -1,6 +1,5 @@
 package com.gym.crm.core.service.impl;
 
-import com.gym.crm.core.client.TrainerWorkloadClientService;
 import com.gym.crm.core.facade.dto.trainee.TraineeInfoDTO;
 import com.gym.crm.core.facade.dto.trainee.TraineeRequestDTO;
 import com.gym.crm.core.facade.dto.trainee.TraineeResponseDTO;
@@ -11,6 +10,9 @@ import com.gym.crm.core.exception.EntityNotFoundException;
 import com.gym.crm.core.exception.ValidationFailedException;
 import com.gym.crm.core.facade.mapper.TraineeMapper;
 import com.gym.crm.core.facade.mapper.TrainerMapper;
+import com.gym.crm.core.messaging.ActionType;
+import com.gym.crm.core.messaging.TrainerWorkloadMapper;
+import com.gym.crm.core.messaging.TrainerWorkloadMessageSender;
 import com.gym.crm.core.model.Trainee;
 import com.gym.crm.core.model.Trainer;
 import com.gym.crm.core.model.User;
@@ -38,7 +40,8 @@ public class TraineeServiceImpl implements TraineeService {
     private final UserProfileService userProfileService;
     private final TraineeMapper mapper;
     private final TrainerMapper trainerMapper;
-    private final TrainerWorkloadClientService workloadClient;
+    private final TrainerWorkloadMapper workloadMapper;
+    private final TrainerWorkloadMessageSender workloadMessageSender;
 
     @Transactional
     @Override
@@ -108,7 +111,9 @@ public class TraineeServiceImpl implements TraineeService {
         repository.delete(trainee);
         log.info("Trainee deleted successfully: username={}", username);
 
-        trainee.getTrainings().forEach(workloadClient::notifyTrainingDeleted);
+        trainee.getTrainings().stream()
+                .map(training -> workloadMapper.toMessage(training, ActionType.DELETE))
+                .forEach(workloadMessageSender::sendUpdate);
     }
 
     @Transactional(readOnly = true)

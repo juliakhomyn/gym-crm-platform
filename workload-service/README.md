@@ -6,6 +6,7 @@ This service manages trainer workload data and registers itself with the Discove
 
 - **Java Development Kit (JDK) 21**
 - **Maven**
+- **ActiveMQ**
 - **[Discovery Server](../discovery-service/README.md)** must be running
 
 ## 1. Clone the project
@@ -21,6 +22,13 @@ Set the following environment variables before running the application:
 ### JWT Configuration
 ```text
 JWT_SECRET=your_jwt_secret_key
+```
+
+### ActiveMQ Configuration
+```text
+ACTIVEMQ_BROKER_URL=tcp://localhost:61616;
+ACTIVEMQ_USER=gymuser;
+ACTIVEMQ_PASSWORD=gympass
 ```
 
 ## 3. Build the project

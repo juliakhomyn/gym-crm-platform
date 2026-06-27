@@ -1,11 +1,13 @@
 package com.gym.crm.core.service.impl;
 
-import com.gym.crm.core.client.TrainerWorkloadClientService;
 import com.gym.crm.core.facade.dto.training.TrainingRequestDTO;
 import com.gym.crm.core.facade.dto.training.TrainingResponseDTO;
 import com.gym.crm.core.facade.dto.training.TrainingTypeDTO;
 import com.gym.crm.core.exception.EntityNotFoundException;
 import com.gym.crm.core.facade.mapper.TrainingMapper;
+import com.gym.crm.core.messaging.ActionType;
+import com.gym.crm.core.messaging.TrainerWorkloadMapper;
+import com.gym.crm.core.messaging.TrainerWorkloadMessageSender;
 import com.gym.crm.core.model.Trainee;
 import com.gym.crm.core.model.Trainer;
 import com.gym.crm.core.model.Training;
@@ -41,7 +43,8 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainerRepository trainerRepository;
     private final TrainingTypeRepository trainingTypeRepository;
     private final TrainingMapper mapper;
-    private final TrainerWorkloadClientService workloadClient;
+    private final TrainerWorkloadMapper workloadMapper;
+    private final TrainerWorkloadMessageSender workloadMessageSender;
 
     @Transactional
     @Override
@@ -66,7 +69,7 @@ public class TrainingServiceImpl implements TrainingService {
         Training saved = trainingRepository.save(training);
         log.info("Training created successfully: id={}", saved.getId());
 
-        workloadClient.notifyTrainingAdded(saved);
+        workloadMessageSender.sendUpdate(workloadMapper.toMessage(saved, ActionType.ADD));
 
         return mapper.toDto(saved);
     }
@@ -87,7 +90,7 @@ public class TrainingServiceImpl implements TrainingService {
         trainingRepository.delete(training);
         log.info("Training deleted successfully: id={}", id);
 
-        workloadClient.notifyTrainingDeleted(training);
+        workloadMessageSender.sendUpdate(workloadMapper.toMessage(training, ActionType.DELETE));
     }
 
     @Transactional(readOnly = true)

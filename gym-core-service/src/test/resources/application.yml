@@ -9,6 +9,9 @@ spring:
         format_sql: true
   liquibase:
     changelog: classpath:db/test-migration/master.xml
+  jms:
+    queue:
+      trainer-workload: trainer.workload.queue
 
 app:
   api:

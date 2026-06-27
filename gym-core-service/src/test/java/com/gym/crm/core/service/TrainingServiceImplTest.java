@@ -1,11 +1,14 @@
 package com.gym.crm.core.service;
 
-import com.gym.crm.core.client.TrainerWorkloadClientService;
 import com.gym.crm.core.facade.dto.training.TrainingRequestDTO;
 import com.gym.crm.core.facade.dto.training.TrainingResponseDTO;
 import com.gym.crm.core.facade.dto.training.TrainingTypeDTO;
 import com.gym.crm.core.exception.EntityNotFoundException;
 import com.gym.crm.core.facade.mapper.TrainingMapper;
+import com.gym.crm.core.messaging.ActionType;
+import com.gym.crm.core.messaging.TrainerWorkloadMapper;
+import com.gym.crm.core.messaging.TrainerWorkloadMessage;
+import com.gym.crm.core.messaging.TrainerWorkloadMessageSender;
 import com.gym.crm.core.model.Trainee;
 import com.gym.crm.core.model.Trainer;
 import com.gym.crm.core.model.Training;
@@ -32,6 +35,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -70,19 +74,23 @@ class TrainingServiceImplTest {
     @Mock
     private TrainingMapper mapper;
     @Mock
-    private TrainerWorkloadClientService workloadClientService;
+    private TrainerWorkloadMapper workloadMapper;
+    @Mock
+    private TrainerWorkloadMessageSender workloadMessageSender;
 
     @InjectMocks
     private TrainingServiceImpl service;
 
     @Test
     void createTraining_shouldSaveTrainingWithCredentials() {
+        TrainerWorkloadMessage workloadMessage = TestDataProvider.buildTrainerWorkloadMessage(ActionType.ADD);
         when(mapper.toEntity(request)).thenReturn(savedTraining);
         when(traineeRepository.findByUserUsername(TRAINEE_USERNAME)).thenReturn(Optional.ofNullable(trainee));
         when(trainerRepository.findByUserUsername(TRAINER_USERNAME)).thenReturn(Optional.ofNullable(trainer));
         when(trainingTypeRepository.findByTrainingTypeName(TRAINING_NAME)).thenReturn(Optional.ofNullable(trainingType));
         when(trainingRepository.save(any(Training.class))).thenReturn(savedTraining);
         when(mapper.toDto(savedTraining)).thenReturn(response);
+        when(workloadMapper.toMessage(any(Training.class), any(ActionType.class))).thenReturn(workloadMessage);
 
         TrainingResponseDTO actual = service.createTraining(request);
 
@@ -90,17 +98,19 @@ class TrainingServiceImplTest {
         verify(mapper).toEntity(request);
         verify(mapper).toDto(savedTraining);
         verify(trainingRepository).save(any(Training.class));
-        verify(workloadClientService).notifyTrainingAdded(any(Training.class));
+        verify(workloadMessageSender).sendUpdate(any(TrainerWorkloadMessage.class));
     }
 
     @Test
     void deleteById_shouldDeleteAndNotifyWorkload_whenAuthorized() {
         when(trainingRepository.findById(VALID_ID)).thenReturn(Optional.of(savedTraining));
+        when(workloadMapper.toMessage(savedTraining, ActionType.DELETE)).thenReturn(mock(TrainerWorkloadMessage.class));
 
         service.deleteById(VALID_ID, TRAINER_USERNAME);
 
         verify(trainingRepository).delete(savedTraining);
-        verify(workloadClientService).notifyTrainingDeleted(savedTraining);
+        verify(workloadMapper).toMessage(savedTraining, ActionType.DELETE);
+        verify(workloadMessageSender).sendUpdate(any(TrainerWorkloadMessage.class));
     }
 
     @Test
@@ -111,7 +121,7 @@ class TrainingServiceImplTest {
 
         assertThat(exception.getMessage()).contains("Access Denied");
         verify(trainingRepository, never()).delete(any(Training.class));
-        verify(workloadClientService, never()).notifyTrainingDeleted(any());
+        verify(workloadMessageSender, never()).sendUpdate(any());
     }
 
     @Test
@@ -122,7 +132,7 @@ class TrainingServiceImplTest {
 
         assertThat(exception.getMessage()).contains("Training not found");
         verify(trainingRepository, never()).delete(any(Training.class));
-        verify(workloadClientService, never()).notifyTrainingDeleted(any());
+        verify(workloadMessageSender, never()).sendUpdate(any());
     }
 
     @Test
