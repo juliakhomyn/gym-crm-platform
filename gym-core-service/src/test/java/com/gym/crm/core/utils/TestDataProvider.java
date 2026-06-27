@@ -649,33 +649,6 @@ public class TestDataProvider {
                 .build();
     }
 
-    public static TrainerWorkloadRequest buildTrainerWorkloadRequest(Training training, ActionType actionType) {
-        User user = training.getTrainer().getUser();
-
-        return new TrainerWorkloadRequest()
-                .trainerUsername(user.getUsername())
-                .trainerFirstName(user.getFirstName())
-                .trainerLastName(user.getLastName())
-                .isActive(user.getIsActive())
-                .trainingDate(training.getTrainingDate())
-                .trainingDuration(training.getTrainingDuration())
-                .actionType(actionType);
-    }
-
-    public static TrainerWorkloadMessage buildTrainerWorkloadMessage(Training training, com.gym.crm.core.messaging.ActionType actionType) {
-        User user = training.getTrainer().getUser();
-
-        return TrainerWorkloadMessage.builder()
-                .trainerUsername(user.getUsername())
-                .trainerFirstName(user.getFirstName())
-                .trainerLastName(user.getLastName())
-                .isActive(user.getIsActive())
-                .trainingDate(training.getTrainingDate())
-                .trainingDuration(training.getTrainingDuration())
-                .actionType(actionType)
-                .build();
-    }
-
     public static TrainerWorkloadMessage buildTrainerWorkloadMessage(com.gym.crm.core.messaging.ActionType actionType) {
         Training training = buildExpectedTraining();
         User user = training.getTrainer().getUser();

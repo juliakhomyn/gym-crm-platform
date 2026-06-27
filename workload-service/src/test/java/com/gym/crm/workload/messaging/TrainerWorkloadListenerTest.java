@@ -2,11 +2,9 @@ package com.gym.crm.workload.messaging;
 
 import com.gym.crm.workload.dto.ActionType;
 import com.gym.crm.workload.dto.TrainerWorkloadMessage;
-import com.gym.crm.workload.openapi.model.TrainerWorkloadRequest;
 import com.gym.crm.workload.dto.TrainerWorkloadUpdateDTO;
 import com.gym.crm.workload.mapper.TrainerWorkloadMapper;
 import com.gym.crm.workload.service.TrainerWorkloadService;
-import com.gym.crm.workload.utils.TestDataProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,11 +17,8 @@ import java.time.LocalDate;
 import java.time.Month;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.DATE;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
