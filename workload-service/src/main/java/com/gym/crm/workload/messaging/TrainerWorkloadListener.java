@@ -20,7 +20,7 @@ public class TrainerWorkloadListener {
     private final TrainerWorkloadService trainerWorkloadService;
     private final TrainerWorkloadMapper mapper;
 
-    @JmsListener(destination = "${spring.jms.queue.trainer-workload}")
+    @JmsListener(destination = "${spring.jms.trainer-workload.queue}", concurrency = "${spring.jms.trainer-workload.concurrency}")
     public void consume(TrainerWorkloadMessage message, @Header(name = TRACE_HEADER, required = false) String traceId) {
         if (traceId != null) {
             MDC.put(TRANSACTION_ID, traceId);

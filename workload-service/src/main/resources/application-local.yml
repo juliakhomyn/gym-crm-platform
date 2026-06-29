@@ -1,0 +1,11 @@
+spring:
+  activemq:
+    broker-url: tcp://localhost:61616
+    user: gymuser
+    password: gympass
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    com.gym.crm: DEBUG

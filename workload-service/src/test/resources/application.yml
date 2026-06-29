@@ -1,7 +1,8 @@
 spring:
   jms:
-    queue:
-      trainer-workload: trainer.workload.queue
+    trainer-workload:
+      queue: trainer.workload.queue
+      concurrency: "1-3"
 
 app:
   api:

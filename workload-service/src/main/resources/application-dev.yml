@@ -1,0 +1,11 @@
+spring:
+  activemq:
+    broker-url: ${ACTIVEMQ_BROKER_URL}
+    user: ${ACTIVEMQ_USER}
+    password: ${ACTIVEMQ_PASSWORD}
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    com.gym.crm: DEBUG
