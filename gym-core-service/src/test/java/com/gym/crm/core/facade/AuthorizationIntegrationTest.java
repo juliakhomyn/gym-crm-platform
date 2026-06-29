@@ -11,7 +11,7 @@ import com.gia.openapi.model.TrainerGetResponse;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import com.gym.crm.core.client.TrainerWorkloadClient;
+import com.gym.crm.core.messaging.TrainerWorkloadMessageSender;
 import com.gym.crm.core.search.filter.TraineeTrainingFilter;
 import com.gym.crm.core.search.filter.TrainerTrainingFilter;
 import com.gym.crm.core.utils.TestDataProvider;
@@ -43,11 +43,11 @@ class AuthorizationIntegrationTest {
     private static final String TRAINER_USERNAME = "Owen.Castleberry";
     private static final String NOT_AUTHORIZED_USERNAME = "Nora.Pemberton";
 
+    @MockBean
+    private TrainerWorkloadMessageSender sender;
+
     @Autowired
     private GymFacade gymFacade;
-
-    @MockBean
-    private TrainerWorkloadClient trainerWorkloadClient;
 
     @Test
     void createTrainee_shouldReturnResponse() {

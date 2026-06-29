@@ -12,6 +12,14 @@ spring:
   redis:
     host: ${REDIS_HOST}
     port: ${REDIS_PORT}
+  activemq:
+    broker-url: ${ACTIVEMQ_BROKER_URL}
+    user: ${ACTIVEMQ_USER}
+    password: ${ACTIVEMQ_PASSWORD}
+  jms:
+    queue:
+      trainer-workload: trainer.workload.queue
+    request-timeout-ms: 5000
 
 management:
   endpoints:

@@ -38,6 +38,7 @@ import com.gym.crm.core.facade.dto.trainer.TrainerUpdateDTO;
 import com.gym.crm.core.facade.dto.training.TrainingRequestDTO;
 import com.gym.crm.core.facade.dto.training.TrainingResponseDTO;
 import com.gym.crm.core.facade.dto.training.TrainingTypeDTO;
+import com.gym.crm.core.messaging.TrainerWorkloadMessage;
 import com.gym.crm.core.model.Trainee;
 import com.gym.crm.core.model.Trainer;
 import com.gym.crm.core.model.Training;
@@ -643,6 +644,21 @@ public class TestDataProvider {
                 .password(PASSWORD)
                 .authorities(Collections.emptyList())
                 .disabled(false)
+                .build();
+    }
+
+    public static TrainerWorkloadMessage buildTrainerWorkloadMessage(com.gym.crm.core.messaging.ActionType actionType) {
+        Training training = buildExpectedTraining();
+        User user = training.getTrainer().getUser();
+
+        return TrainerWorkloadMessage.builder()
+                .trainerUsername(user.getUsername())
+                .trainerFirstName(user.getFirstName())
+                .trainerLastName(user.getLastName())
+                .isActive(user.getIsActive())
+                .trainingDate(training.getTrainingDate())
+                .trainingDuration(training.getTrainingDuration())
+                .actionType(actionType)
                 .build();
     }
 }

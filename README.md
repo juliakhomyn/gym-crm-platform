@@ -20,6 +20,7 @@ To run this application, you should have the following installed:
 - **Git**
 - **Redis**
 - **MySQL Server**
+- **ActiveMQ**
 
 ## Platform Setup
 
