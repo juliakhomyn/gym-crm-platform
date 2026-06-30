@@ -9,7 +9,6 @@ import org.springframework.jms.support.converter.MappingJackson2MessageConverter
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
@@ -22,11 +21,7 @@ public class JmsConfig {
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
         converter.setObjectMapper(mapper);
-
-        Map<String, Class<?>> mappings = new HashMap<>();
-        mappings.put("trainerWorkload", TrainerWorkloadMessage.class);
-
-        converter.setTypeIdMappings(mappings);
+        converter.setTypeIdMappings(Map.of("trainerWorkload", TrainerWorkloadMessage.class));
 
         return converter;
     }

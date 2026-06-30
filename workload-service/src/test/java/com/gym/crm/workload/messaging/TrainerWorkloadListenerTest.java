@@ -14,15 +14,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.MDC;
+import org.springframework.jms.JmsException;
 
 import java.time.LocalDate;
 import java.time.Month;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,10 +40,15 @@ class TrainerWorkloadListenerTest {
 
     @Mock
     private TrainerWorkloadService trainerWorkloadService;
+
     @Mock
     private TrainerWorkloadMapper mapper;
+
     @Mock
     private TrainerWorkloadMessageValidator validator;
+
+    @Mock
+    private TrainerWorkloadDlqSender dlqSender;
 
     @InjectMocks
     private TrainerWorkloadListener listener;
@@ -55,19 +61,20 @@ class TrainerWorkloadListenerTest {
     @Test
     void consume_shouldSetAndRemoveMdc_whenTraceIdPresent() {
         String traceId = "trace-123";
-        doNothing().when(validator).validate(workloadMessage);
         when(mapper.toUpdateDTO(workloadMessage)).thenReturn(updateDTO);
 
         listener.consume(workloadMessage, traceId);
 
         assertThat(MDC.get(TRANSACTION_ID)).isNull();
+
         verify(validator).validate(workloadMessage);
+        verify(mapper).toUpdateDTO(workloadMessage);
         verify(trainerWorkloadService).update(updateDTO);
+        verifyNoInteractions(dlqSender);
     }
 
     @Test
-    void consume_shouldNotSetMdc_whenTraceIdIsNull() {
-        doNothing().when(validator).validate(workloadMessage);
+    void consume_shouldGenerateTransactionId_whenTraceIdIsNull() {
         when(mapper.toUpdateDTO(workloadMessage)).thenReturn(updateDTO);
 
         listener.consume(workloadMessage, null);
@@ -75,12 +82,12 @@ class TrainerWorkloadListenerTest {
         assertThat(MDC.get(TRANSACTION_ID)).isNull();
         verify(validator).validate(workloadMessage);
         verify(trainerWorkloadService).update(updateDTO);
+        verifyNoInteractions(dlqSender);
     }
 
     @Test
     void consume_shouldThrowWorkloadMessageProcessingException_whenServiceThrows() {
         String traceId = "trace-456";
-        doNothing().when(validator).validate(workloadMessage);
         when(mapper.toUpdateDTO(workloadMessage)).thenReturn(updateDTO);
         doThrow(new RuntimeException("Test error")).when(trainerWorkloadService).update(updateDTO);
 
@@ -90,19 +97,30 @@ class TrainerWorkloadListenerTest {
         assertThat(exception.getCause()).isInstanceOf(RuntimeException.class);
         assertThat(exception.getCause().getMessage()).isEqualTo("Test error");
         assertThat(MDC.get(TRANSACTION_ID)).isNull();
+        verifyNoInteractions(dlqSender);
     }
 
     @Test
-    void consume_shouldThrowWorkloadMessageProcessingException_whenValidationFails() {
+    void consume_shouldSendMessageToDlq_whenValidationFails() {
         String traceId = "trace-789";
         doThrow(new InvalidMessageException("Invalid!")).when(validator).validate(workloadMessage);
 
+        listener.consume(workloadMessage, traceId);
+
+        verify(dlqSender).send(workloadMessage, "Invalid!", traceId);
+        verifyNoInteractions(trainerWorkloadService);
+    }
+
+    @Test
+    void consume_shouldThrowWorkloadMessageProcessingException_whenSendingToDlqFails() {
+        String traceId = "trace-789";
+        doThrow(new InvalidMessageException("Invalid!")).when(validator).validate(workloadMessage);
+        doThrow(new JmsException("DLQ unavailable") {}).when(dlqSender).send(workloadMessage, "Invalid!", traceId);
+
         WorkloadMessageProcessingException exception = assertThrows(WorkloadMessageProcessingException.class, () -> listener.consume(workloadMessage, traceId));
 
-        assertThat(exception.getMessage()).isEqualTo("Failed to process workload message");
-        assertThat(exception.getCause()).isInstanceOf(InvalidMessageException.class);
-        assertThat(exception.getCause().getMessage()).isEqualTo("Invalid!");
-        assertThat(MDC.get(TRANSACTION_ID)).isNull();
+        assertThat(exception.getMessage()).isEqualTo("Unable to send workload message to DLQ");
+        assertThat(exception.getCause()).isInstanceOf(JmsException.class);
     }
 
     private TrainerWorkloadMessage buildTrainerWorkloadMessage() {
