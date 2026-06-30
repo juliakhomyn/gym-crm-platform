@@ -36,9 +36,10 @@ class TrainerWorkloadListenerTest {
 
     @Mock
     private TrainerWorkloadService trainerWorkloadService;
-
     @Mock
     private TrainerWorkloadMapper mapper;
+    @Mock
+    private TrainerWorkloadMessageValidator validator;
 
     @InjectMocks
     private TrainerWorkloadListener listener;
@@ -70,14 +71,14 @@ class TrainerWorkloadListenerTest {
     }
 
     @Test
-    void consume_shouldRemoveMdcEvenOnException() {
+    void consume_shouldThrowRuntimeException_whenServiceThrows() {
         String traceId = "trace-456";
         when(mapper.toUpdateDTO(workloadMessage)).thenReturn(updateDTO);
-        doThrow(new RuntimeException("Test error")).when(trainerWorkloadService).update(updateDTO);
+        doThrow(new RuntimeException()).when(trainerWorkloadService).update(updateDTO);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> listener.consume(workloadMessage, traceId));
 
-        assertThat(exception.getMessage()).isEqualTo("Test error");
+        assertThat(exception.getMessage()).isEqualTo("Failed to process workload message");
         assertThat(MDC.get(TRANSACTION_ID)).isNull();
     }
 

@@ -7,6 +7,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -53,6 +54,13 @@ public class ApiExceptionHandler {
         log.warn(VALIDATION_ERROR_LOG_MESSAGE, errorMessage);
 
         return buildErrorResponse(VALIDATION_ERROR, errorMessage);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        log.warn("Malformed JSON request: {}", ex.getMessage());
+
+        return buildErrorResponse(ApiError.VALIDATION_ERROR, "Malformed JSON: " + ex.getMostSpecificCause().getMessage());
     }
 
     @ExceptionHandler(BadCredentialsException.class)

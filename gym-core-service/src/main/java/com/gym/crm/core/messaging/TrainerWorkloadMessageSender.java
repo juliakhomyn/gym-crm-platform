@@ -35,7 +35,8 @@ public class TrainerWorkloadMessageSender {
 
             log.info("Workload update message sent: trainer={}, action={}", message.getTrainerUsername(), message.getActionType().name());
         } catch (JmsException ex) {
-            log.error("Failed to send workload update", ex);
+            log.error("Failed to send workload update to queue: trainer={}, action={}", message.getTrainerUsername(), message.getActionType(), ex);
+
             throw new ServiceConnectionException("Failed to send message to workload queue");
         }
     }
