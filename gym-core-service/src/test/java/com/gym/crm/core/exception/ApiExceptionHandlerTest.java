@@ -1,11 +1,13 @@
 package com.gym.crm.core.exception;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.gia.openapi.model.ErrorResponse;
 import jakarta.persistence.PersistenceException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.validation.BindingResult;
@@ -74,6 +76,23 @@ class ApiExceptionHandlerTest {
         assertThat(response.getBody().getErrorMessage()).contains("Validation error:")
                 .contains("Username must not be blank")
                 .contains("ID must be positive");
+    }
+
+    @Test
+    void handleHttpMessageNotReadable_shouldReturnErrorResponse() {
+        String parseErrorMsg = "Unexpected character (',' (code 44)): expected a value";
+        JsonParseException jsonParseException = new JsonParseException(null, parseErrorMsg);
+        HttpMessageNotReadableException exception = new HttpMessageNotReadableException("Malformed JSON", jsonParseException, null);
+
+        ResponseEntity<ErrorResponse> response = handler.handleHttpMessageNotReadable(exception);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ApiError.VALIDATION_ERROR.getCode());
+        assertThat(response.getBody().getErrorMessage())
+                .contains("Malformed JSON")
+                .contains(parseErrorMsg);
     }
 
     @Test

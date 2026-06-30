@@ -12,6 +12,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 @Getter
 public enum ApiError {
     VALIDATION_ERROR(2760, "Validation error: ", BAD_REQUEST),
+    INVALID_MESSAGE_ERROR(2760, "Invalid message error: ", BAD_REQUEST),
     AUTHENTICATION_ERROR(2805, "Authentication fails: ", UNAUTHORIZED),
     AUTHORIZATION_ERROR(2806, "User is not authorized for request operation: ", FORBIDDEN),
     NOT_FOUND_ERROR(2835, "Requested data was not found: ", NOT_FOUND),

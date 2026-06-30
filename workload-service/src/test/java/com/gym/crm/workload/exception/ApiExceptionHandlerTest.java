@@ -22,16 +22,16 @@ class ApiExceptionHandlerTest {
     private final ApiExceptionHandler handler = new ApiExceptionHandler();
 
     @Test
-    void handleValidationFailedException_shouldReturnErrorResponse() {
-        ValidationFailedException exception = new ValidationFailedException("Date of birth must be in the past");
+    void handleInvalidMessageException_shouldReturnErrorResponse() {
+        InvalidMessageException exception = new InvalidMessageException("Date of birth must be in the past");
 
-        ResponseEntity<ErrorResponse> response = handler.handleValidationFailedException(exception);
+        ResponseEntity<ErrorResponse> response = handler.handleInvalidMessageException(exception);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode().value()).isEqualTo(400);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getErrorCode()).isEqualTo(ApiError.VALIDATION_ERROR.getCode());
-        assertThat(response.getBody().getErrorMessage()).isEqualTo("Validation error: Date of birth must be in the past");
+        assertThat(response.getBody().getErrorMessage()).isEqualTo("Invalid message error: Date of birth must be in the past");
     }
 
     @Test

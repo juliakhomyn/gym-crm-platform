@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
+import static com.gym.crm.workload.exception.ApiError.INVALID_MESSAGE_ERROR;
 import static com.gym.crm.workload.exception.ApiError.NOT_FOUND_ERROR;
 import static com.gym.crm.workload.exception.ApiError.SERVICE_ERROR;
 import static com.gym.crm.workload.exception.ApiError.VALIDATION_ERROR;
@@ -23,9 +24,11 @@ public class ApiExceptionHandler {
 
     private static final String VALIDATION_ERROR_LOG_MESSAGE = "Validation error: {}";
 
-    @ExceptionHandler(ValidationFailedException.class)
-    public ResponseEntity<ErrorResponse> handleValidationFailedException(ValidationFailedException ex) {
-        return validationResponse(ex.getMessage());
+    @ExceptionHandler(InvalidMessageException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidMessageException(InvalidMessageException ex) {
+        log.warn("{}: {}", INVALID_MESSAGE_ERROR.getMessage(), ex.getMessage());
+
+        return buildErrorResponse(INVALID_MESSAGE_ERROR, ex.getMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
