@@ -6,6 +6,7 @@ import com.gym.crm.workload.exception.InvalidMessageException;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.Month;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -17,7 +18,7 @@ class TrainerWorkloadMessageValidatorTest {
     private static final String FIRST_NAME = "Callum";
     private static final String LAST_NAME = "Whitfield";
     private static final int DURATION = 60;
-    private static final LocalDate DATE = LocalDate.of(2020, 1, 1);
+    private static final LocalDate DATE = LocalDate.of(2020, Month.JANUARY, 1);
 
     private final TrainerWorkloadMessage workloadMessage = buildTrainerWorkloadMessage();
 
