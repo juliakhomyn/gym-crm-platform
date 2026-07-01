@@ -2,35 +2,36 @@ package com.gym.crm.workload.messaging;
 
 import com.gym.crm.workload.dto.TrainerWorkloadMessage;
 import com.gym.crm.workload.exception.InvalidMessageException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component
-public class TrainerWorkloadMessageValidator {
+import java.util.Set;
+import java.util.stream.Collectors;
 
-    public void validate(TrainerWorkloadMessage message) {
-        if (message == null) {
-            throw new InvalidMessageException("Message cannot be null");
+@Component
+@RequiredArgsConstructor
+public class TrainerWorkloadMessageValidator {
+    private static final String DELIMITER = "; ";
+    private static final String MESSAGE_NOT_NULL = "Message cannot be null";
+
+    private final Validator validator;
+
+    public void validate(TrainerWorkloadMessage workloadMessage) {
+        if (workloadMessage == null) {
+            throw new InvalidMessageException(MESSAGE_NOT_NULL);
         }
-        if (message.getTrainerUsername() == null || message.getTrainerUsername().isBlank()) {
-            throw new InvalidMessageException("Trainer username is missing");
+        
+        Set<ConstraintViolation<TrainerWorkloadMessage>> violations = validator.validate(workloadMessage);
+        if (violations.isEmpty()) {
+            return;
         }
-        if (message.getTrainerFirstName() == null || message.getTrainerFirstName().isBlank()) {
-            throw new InvalidMessageException("Trainer first name is missing");
-        }
-        if (message.getTrainerLastName() == null || message.getTrainerLastName().isBlank()) {
-            throw new InvalidMessageException("Trainer last name is missing");
-        }
-        if (message.getIsActive() == null) {
-            throw new InvalidMessageException("Is active flag is missing");
-        }
-        if (message.getActionType() == null) {
-            throw new InvalidMessageException("Action type is missing");
-        }
-        if (message.getTrainingDate() == null) {
-            throw new InvalidMessageException("Training date is missing");
-        }
-        if (message.getTrainingDuration() == null || message.getTrainingDuration() <= 0) {
-            throw new InvalidMessageException("Training duration is missing or invalid");
-        }
+
+        String message = violations.stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(DELIMITER));
+
+        throw new InvalidMessageException(message);
     }
 }
