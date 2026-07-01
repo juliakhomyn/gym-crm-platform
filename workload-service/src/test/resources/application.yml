@@ -3,7 +3,13 @@ spring:
     trainer-workload:
       queue: trainer.workload.queue
       concurrency: "1-3"
-
+      dlq: trainer.workload.dlq
+    redelivery:
+      initial-delay-ms: 100
+      maximum-redeliveries: 2
+      maximum-delay-ms: 500
+      back-off-multiplier: 2.0
+      use-exponential-back-off: true
 app:
   api:
     base-path: /api/v1

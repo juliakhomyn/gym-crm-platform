@@ -5,6 +5,13 @@ spring:
     trainer-workload:
       queue: trainer.workload.queue
       concurrency: "3-10"
+      dlq: trainer.workload.dlq
+    redelivery:
+      initial-delay-ms: 1000
+      maximum-redeliveries: 3
+      maximum-delay-ms: 10000
+      back-off-multiplier: 2.0
+      use-exponential-back-off: true
 
 server:
   port: 8081
