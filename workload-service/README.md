@@ -7,6 +7,7 @@ This service manages trainer workload data and registers itself with the Discove
 - **Java Development Kit (JDK) 21**
 - **Maven**
 - **ActiveMQ**
+- **MongoDB**
 - **[Discovery Server](../discovery-service/README.md)** must be running
 
 ## 1. Clone the project
@@ -29,6 +30,11 @@ JWT_SECRET=your_jwt_secret_key
 ACTIVEMQ_BROKER_URL=tcp://localhost:61616;
 ACTIVEMQ_USER=gymuser;
 ACTIVEMQ_PASSWORD=gympass
+```
+
+### MongoDB Configuration
+```text
+MONGODB_URI=mongodb://localhost:27017/workload_db
 ```
 
 ## 3. Build the project

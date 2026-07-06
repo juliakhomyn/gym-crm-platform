@@ -3,6 +3,9 @@ spring:
     broker-url: tcp://localhost:61616
     user: gymuser
     password: gympass
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/workload_db
 
 logging:
   level:
