@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {})
 public @interface Month {
-    String message() default "Invalid year";
+    String message() default "Invalid month";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
