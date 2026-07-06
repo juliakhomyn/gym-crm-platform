@@ -69,6 +69,7 @@ class TrainerWorkloadValidationTest {
 
         Set<ConstraintViolation<YearWorkload>> violations = validator.validate(invalidWorkload);
 
+        assertThat(invalidWorkload.getMonths()).isNotNull();
         assertThat(violations)
                 .extracting(ConstraintViolation::getPropertyPath)
                 .map(Path::toString)
