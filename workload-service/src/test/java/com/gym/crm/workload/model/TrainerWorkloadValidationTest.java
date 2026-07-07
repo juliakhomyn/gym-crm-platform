@@ -104,7 +104,9 @@ class TrainerWorkloadValidationTest {
 
     @Test
     void shouldPassValidationForValidTrainerWorkload() {
-        assertThat(validator.validate(workload)).isEmpty();
+        Set<ConstraintViolation<TrainerWorkload>> violations = validator.validate(workload);
+
+        assertThat(violations).isEmpty();
     }
 
     private static Stream<String> invalidUsernames() {
