@@ -24,10 +24,10 @@ class TrainerWorkloadRepositoryImplTest {
     private static final int YEAR = 2026;
     private static final int MONTH = 1;
 
+    private final TrainerWorkload trainerWorkload = TestDataProvider.buildTrainerWorkload();
+
     @Autowired
     private TrainerWorkloadRepository repository;
-
-    private final TrainerWorkload trainerWorkload = TestDataProvider.buildTrainerWorkload();
 
     @BeforeEach
     void tearDown() {
