@@ -30,7 +30,7 @@ class TrainerWorkloadRepositoryImplTest {
     private TrainerWorkloadRepository repository;
 
     @BeforeEach
-    void tearDown() {
+    void setUp() {
         repository.deleteAll();
     }
 
