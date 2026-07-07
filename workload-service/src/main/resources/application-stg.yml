@@ -3,6 +3,9 @@ spring:
     broker-url: ${ACTIVEMQ_BROKER_URL}
     user: ${ACTIVEMQ_USER}
     password: ${ACTIVEMQ_PASSWORD}
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
 
 logging:
   level:
