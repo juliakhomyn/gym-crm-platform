@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
 @ActiveProfiles("test")
-class TrainerWorkloadRepositoryImplTest {
+class TrainerWorkloadRepositoryTest extends AbstractMongoRepositoryTest{
     private static final String USERNAME = "Callum.Whitfield";
     private static final String FIRST_NAME = "Callum";
     private static final String LAST_NAME = "Whitfield";
