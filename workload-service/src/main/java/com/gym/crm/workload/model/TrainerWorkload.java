@@ -47,5 +47,5 @@ public class TrainerWorkload {
     @Field(name = "years")
     @Builder.Default
     @NotNull
-    private final List<YearWorkload> years = new ArrayList<>();
+    private List<YearWorkload> years = new ArrayList<>();
 }
