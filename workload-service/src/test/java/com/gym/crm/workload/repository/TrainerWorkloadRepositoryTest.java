@@ -4,9 +4,7 @@ import com.gym.crm.workload.model.MonthWorkload;
 import com.gym.crm.workload.model.TrainerWorkload;
 import com.gym.crm.workload.model.YearWorkload;
 import com.gym.crm.workload.utils.TestDataProvider;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -16,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
 @ActiveProfiles("test")
-class TrainerWorkloadRepositoryTest extends AbstractMongoRepositoryTest{
+class TrainerWorkloadRepositoryTest extends AbstractMongoRepositoryTest {
     private static final String USERNAME = "Callum.Whitfield";
     private static final String FIRST_NAME = "Callum";
     private static final String LAST_NAME = "Whitfield";
@@ -25,14 +23,6 @@ class TrainerWorkloadRepositoryTest extends AbstractMongoRepositoryTest{
     private static final int MONTH = 1;
 
     private final TrainerWorkload trainerWorkload = TestDataProvider.buildTrainerWorkload();
-
-    @Autowired
-    private TrainerWorkloadRepository repository;
-
-    @BeforeEach
-    void setUp() {
-        repository.deleteAll();
-    }
 
     @Test
     void findByTrainerUsername_shouldReturnWorkload_whenExists() {
