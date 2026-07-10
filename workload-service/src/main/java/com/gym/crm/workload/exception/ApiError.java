@@ -16,6 +16,7 @@ public enum ApiError {
     AUTHENTICATION_ERROR(2805, "Authentication fails: ", UNAUTHORIZED),
     AUTHORIZATION_ERROR(2806, "User is not authorized for request operation: ", FORBIDDEN),
     NOT_FOUND_ERROR(2835, "Requested data was not found: ", NOT_FOUND),
+    DATABASE_ERROR(3358, "Unexpected database access failure", INTERNAL_SERVER_ERROR),
     SERVICE_ERROR(3200, "Internal processing error", INTERNAL_SERVER_ERROR);
 
     private final int code;

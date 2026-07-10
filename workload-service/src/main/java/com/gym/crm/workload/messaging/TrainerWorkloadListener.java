@@ -8,6 +8,7 @@ import com.gym.crm.workload.service.TrainerWorkloadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Header;
@@ -53,6 +54,10 @@ public class TrainerWorkloadListener {
             log.warn("Invalid workload message received for trainer={}. Reason={}", trainerUsername, e.getMessage());
 
             sendToDlq(message, e.getMessage(), transactionId);
+        } catch (DataAccessException e) {
+            log.error("Database error while processing workload update: trainer={}", trainerUsername, e);
+
+            throw new WorkloadMessageProcessingException("Database unavailable", e);
         } catch (RuntimeException e) {
             log.error("Unexpected error while processing workload update: trainer={}, action={}", trainerUsername, message.getActionType(), e);
 

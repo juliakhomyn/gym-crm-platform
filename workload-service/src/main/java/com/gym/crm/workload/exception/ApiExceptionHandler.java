@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
+import static com.gym.crm.workload.exception.ApiError.DATABASE_ERROR;
 import static com.gym.crm.workload.exception.ApiError.INVALID_MESSAGE_ERROR;
 import static com.gym.crm.workload.exception.ApiError.NOT_FOUND_ERROR;
 import static com.gym.crm.workload.exception.ApiError.SERVICE_ERROR;
@@ -64,6 +66,13 @@ public class ApiExceptionHandler {
         log.warn("Requested data was not found: {}", ex.getMessage());
 
         return buildErrorResponse(NOT_FOUND_ERROR, ex.getMessage());
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleDataAccessException(DataAccessException ex) {
+        log.error("Database access failure:", ex);
+
+        return buildErrorResponse(DATABASE_ERROR, "");
     }
 
     @ExceptionHandler(Exception.class)
