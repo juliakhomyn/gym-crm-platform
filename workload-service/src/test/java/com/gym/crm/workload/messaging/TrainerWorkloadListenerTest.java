@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.MDC;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jms.JmsException;
 
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import java.time.Month;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -82,6 +84,20 @@ class TrainerWorkloadListenerTest {
         assertThat(MDC.get(TRANSACTION_ID)).isNull();
         verify(validator).validate(workloadMessage);
         verify(trainerWorkloadService).update(updateDTO);
+        verifyNoInteractions(dlqSender);
+    }
+
+    @Test
+    void consume_shouldThrowWorkloadMessageProcessingException_whenServiceThrowsDBError() {
+        String traceId = "trace-456";
+        when(mapper.toUpdateDTO(workloadMessage)).thenReturn(updateDTO);
+        doThrow(mock(DataAccessException.class)).when(trainerWorkloadService).update(updateDTO);
+
+        WorkloadMessageProcessingException exception = assertThrows(WorkloadMessageProcessingException.class, () -> listener.consume(workloadMessage, traceId));
+
+        assertThat(exception.getMessage()).isEqualTo("Database unavailable");
+        assertThat(exception.getCause()).isInstanceOf(RuntimeException.class);
+        assertThat(MDC.get(TRANSACTION_ID)).isNull();
         verifyNoInteractions(dlqSender);
     }
 

@@ -4,6 +4,7 @@ import com.gym.crm.workload.openapi.model.ErrorResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -98,6 +99,19 @@ class ApiExceptionHandlerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getErrorCode()).isEqualTo(ApiError.NOT_FOUND_ERROR.getCode());
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Requested data was not found: User not found");
+    }
+
+    @Test
+    void handleDataAccessException_shouldReturnErrorResponse() {
+        DataAccessException exception = mock(DataAccessException.class);
+
+        ResponseEntity<ErrorResponse> response = handler.handleDataAccessException(exception);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode().value()).isEqualTo(500);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getErrorCode()).isEqualTo(ApiError.DATABASE_ERROR.getCode());
+        assertThat(response.getBody().getErrorMessage()).isEqualTo("Unexpected database access failure");
     }
 
     @Test
