@@ -15,6 +15,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthSteps {
     private static final String URL = "/auth";
+    private static final String LOGOUT_URL = "/logout";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String TOKEN = "token";
 
     private final ApiClient client;
     private final TestContext context;
@@ -26,8 +30,8 @@ public class AuthSteps {
 
     @Given("a registered user with username {string} and password {string}")
     public void registeredUser(String username, String password) {
-        context.put("username", username);
-        context.put("password", password);
+        context.put(USERNAME, username);
+        context.put(PASSWORD, password);
     }
 
     @Given("the user is authenticated")
@@ -37,8 +41,8 @@ public class AuthSteps {
 
     @When("the user logs in with valid credentials")
     public void successfulLogin() {
-        String username = context.get("username");
-        String password = context.get("password");
+        String username = context.get(USERNAME);
+        String password = context.get(PASSWORD);
         login(username, password);
     }
 
@@ -54,8 +58,8 @@ public class AuthSteps {
 
     @When("the user logs out")
     public void theUserLogsOut() {
-        Map<String, Object> body = Map.of("username", TestData.TRAINER_USERNAME, "password", TestData.TRAINER_PASSWORD);
-        Response response = client.post("/logout",
+        Map<String, Object> body = Map.of(USERNAME, TestData.TRAINER_USERNAME, PASSWORD, TestData.TRAINER_PASSWORD);
+        Response response = client.post(LOGOUT_URL,
                 context.getToken(),
                 body);
 
@@ -64,7 +68,7 @@ public class AuthSteps {
 
     @When("the user accesses a protected endpoint with the same token")
     public void accessProtectedEndpoint() {
-        Response response = client.get("/logout",
+        Response response = client.get(LOGOUT_URL,
                 context.getToken(),
                 Map.of());
 
@@ -80,7 +84,7 @@ public class AuthSteps {
     public void responseContainsJwtToken() {
         String token = context.getLastResponse()
                 .jsonPath()
-                .getString("token");
+                .getString(TOKEN);
 
         assertThat(token).isNotBlank();
     }
@@ -89,17 +93,17 @@ public class AuthSteps {
     public void responseContainsUsername() {
         assertThat(context.getLastResponse()
                 .jsonPath()
-                .getString("username"))
+                .getString(USERNAME))
                 .isEqualTo(TestData.TRAINER_USERNAME);
     }
 
     private void login(String username, String password) {
-        Map<String, Object> body = Map.of("username", username, "password", password);
+        Map<String, Object> body = Map.of(USERNAME, username, PASSWORD, password);
         Response response = client.post("/login", null, body);
         context.setLastResponse(response);
 
         if (response.statusCode() == 200) {
-            context.setToken(response.jsonPath().getString("token"));
+            context.setToken(response.jsonPath().getString(TOKEN));
         }
     }
 }

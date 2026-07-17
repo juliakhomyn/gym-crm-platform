@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CoreSteps {
-    private final static String TRAINEE_URL = "/trainees";
+    private static final String TRAINEE_URL = "/trainees";
 
     private final ApiClient client;
     private final TestContext context;

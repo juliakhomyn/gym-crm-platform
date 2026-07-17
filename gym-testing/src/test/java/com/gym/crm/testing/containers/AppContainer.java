@@ -25,8 +25,8 @@ public final class AppContainer {
     private static Map<String,String> coreProperties() {
         return Map.of("SPRING_PROFILES_ACTIVE", "test",
                 "SPRING_DATASOURCE_URL", "jdbc:mysql://mysql-db:3306/gym_db",
-                "SPRING_DATASOURCE_USERNAME", "gym",
-                "SPRING_DATASOURCE_PASSWORD", "gym",
+                "SPRING_DATASOURCE_USERNAME", "gymuser",
+                "SPRING_DATASOURCE_PASSWORD", "gympass",
                 "SPRING_DATA_REDIS_HOST", "redis-cache",
                 "SPRING_ACTIVEMQ_BROKER_URL", "tcp://message-broker:61616",
                 "EUREKA_CLIENT_ENABLED", "false",
