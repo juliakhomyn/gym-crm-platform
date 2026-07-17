@@ -28,12 +28,6 @@ public class ApiClient {
                 .post(baseUrl + path);
     }
 
-    public Response put(String path, String token, Object body) {
-        return request(token)
-                .body(body)
-                .put(baseUrl + path);
-    }
-
     private RequestSpecification request(String token) {
         RequestSpecification request = RestAssured.given()
                 .relaxedHTTPSValidation()
