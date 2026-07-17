@@ -9,4 +9,7 @@ public final class TestData {
 
     public static final String TRAINER_USERNAME = "Callum.Whitfield";
     public static final String TRAINER_PASSWORD = "password222";
+
+    public static final Integer YEAR = 2026;
+    public static final Integer MONTH = 1;
 }
