@@ -19,6 +19,7 @@
         <module>workload-service</module>
         <module>discovery-service</module>
         <module>gateway-service</module>
+        <module>gym-testing</module>
     </modules>
 
     <properties>
