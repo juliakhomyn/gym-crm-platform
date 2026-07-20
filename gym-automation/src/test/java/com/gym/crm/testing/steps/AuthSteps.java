@@ -41,14 +41,12 @@ public class AuthSteps {
 
     @Given("the user is authenticated")
     public void theUserIsAuthenticated() {
-        RegisteredUser user = context.getRegisteredUser();
-        login(user.getUsername(), user.getPassword());
+        authenticateUser();
     }
 
     @When("the user logs in with valid credentials")
     public void successfulLogin() {
-        RegisteredUser user = context.getRegisteredUser();
-        login(user.getUsername(), user.getPassword());
+        authenticateUser();
     }
 
     @When("the user logs in with an incorrect password")
@@ -114,5 +112,10 @@ public class AuthSteps {
                 .firstName(trainer.get(FIRST_NAME))
                 .lastName(trainer.get(LAST_NAME))
                 .build();
+    }
+
+    private void authenticateUser() {
+        RegisteredUser user = context.getRegisteredUser();
+        login(user.getUsername(), user.getPassword());
     }
 }
