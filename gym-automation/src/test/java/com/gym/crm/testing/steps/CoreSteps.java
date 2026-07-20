@@ -10,24 +10,32 @@ import io.restassured.response.Response;
 
 import java.util.Map;
 
+import static com.gym.crm.testing.constants.ApiConstants.FIRST_NAME;
+import static com.gym.crm.testing.constants.ApiConstants.LAST_NAME;
+import static com.gym.crm.testing.constants.ApiConstants.REGISTER_TRAINEE_URL;
+import static com.gym.crm.testing.constants.ApiConstants.USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CoreSteps {
-    private static final String TRAINEE_URL = "/trainees";
-
     private final ApiClient client;
     private final TestContext context;
 
     public CoreSteps(TestContext context) {
         this.context = context;
-        this.client = new ApiClient(LocalTestEnvironment.coreUrl() + TRAINEE_URL);
+        this.client = new ApiClient(LocalTestEnvironment.coreUrl());
     }
 
-    @When("the client registers a trainee with:")
+    @When("the client registers a user with:")
     public void registerTrainee(DataTable table) {
         Map<String, String> trainee = table.asMap();
 
-        Response response = client.post("/register", null, trainee);
+        Response response = client.post(REGISTER_TRAINEE_URL, null, trainee);
+        context.setLastResponse(response);
+    }
+
+    @When("empty registration request is received")
+    public void emptyRegistrationRequestReceived() {
+        Response response = client.post(REGISTER_TRAINEE_URL, null, Map.of());
         context.setLastResponse(response);
     }
 
@@ -35,7 +43,7 @@ public class CoreSteps {
     public void responseContainsGeneratedUsername() {
         String username = context.getLastResponse()
                 .jsonPath()
-                .getString("username");
+                .getString(USERNAME);
 
         assertThat(username).isNotBlank();
     }
@@ -44,7 +52,7 @@ public class CoreSteps {
     public void verifyFirstName(String firstName) {
         assertThat(context.getLastResponse()
                         .jsonPath()
-                        .getString("firstName"))
+                        .getString(FIRST_NAME))
                 .isEqualTo(firstName);
     }
 
@@ -52,7 +60,7 @@ public class CoreSteps {
     public void verifyLastName(String lastName) {
         assertThat(context.getLastResponse()
                         .jsonPath()
-                        .getString("lastName"))
+                        .getString(LAST_NAME))
                 .isEqualTo(lastName);
     }
 }

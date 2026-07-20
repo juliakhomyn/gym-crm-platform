@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <cucumber.version>7.18.0</cucumber.version>
         <rest-assured.version>5.5.0</rest-assured.version>
-        <skipSystemTests>true</skipSystemTests>
+        <skipITs>true</skipITs>
     </properties>
 
     <dependencies>
@@ -98,13 +98,24 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.1.2</version>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipITs>${skipSystemTests}</skipITs>
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <skipITs>${skipITs}</skipITs>
                     <includes>
                         <include>**/*IT.java</include>
                     </includes>
+                    <systemPropertyVariables>
+                        <core.image>${core.image}</core.image>
+                        <workload.image>${workload.image}</workload.image>
+                    </systemPropertyVariables>
                 </configuration>
                 <executions>
                     <execution>
