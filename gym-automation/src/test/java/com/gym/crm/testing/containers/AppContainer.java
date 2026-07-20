@@ -13,23 +13,25 @@ import java.util.Map;
 public final class AppContainer {
 
     public static GenericContainer<?> createCoreApp(Network network) {
-        return new GenericContainer<>(DockerImageName.parse("gym-core-service:local"))
+        return new GenericContainer<>(DockerImageName.parse(System.getProperty("core.image", "gym-core-service:local")))
                 .withNetwork(network)
                 .withExposedPorts(8082)
                 .withEnv(commonProperties())
                 .withEnv(coreProperties())
                 .waitingFor(Wait.forHttp("/gym-crm/core/actuator/health")
-                                .forStatusCode(200)
-                                .withStartupTimeout(Duration.ofMinutes(3)));
+                        .forPort(8082)
+                        .forStatusCode(200)
+                        .withStartupTimeout(Duration.ofMinutes(3)));
     }
 
     public static GenericContainer<?> createWorkloadApp(Network network) {
-        return new GenericContainer<>(DockerImageName.parse("workload-service:local"))
+        return new GenericContainer<>(DockerImageName.parse(System.getProperty("workload.image", "workload-service:local")))
                 .withNetwork(network)
                 .withExposedPorts(8081)
                 .withEnv(commonProperties())
                 .withEnv(workloadProperties())
-                .waitingFor(Wait.forHttp("/gym-crm/core/actuator/health")
+                .waitingFor(Wait.forHttp("/gym-crm/workload/actuator/health")
+                        .forPort(8081)
                         .forStatusCode(200)
                         .withStartupTimeout(Duration.ofMinutes(3)));
     }
@@ -39,20 +41,20 @@ public final class AppContainer {
                 "SPRING_ACTIVEMQ_BROKER_URL", "tcp://message-broker:61616",
                 "SPRING_ACTIVEMQ_USER", "gymuser",
                 "SPRING_ACTIVEMQ_PASSWORD", "gympass",
+                "EUREKA_CLIENT_ENABLED", "false",
                 "JWT_SECRET", "QWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo1Njc4OTAxMjM0NTY3OA==");
     }
 
     private static Map<String,String> coreProperties() {
-        return Map.of("SPRING_PROFILES_ACTIVE", "test",
-                "SPRING_DATASOURCE_URL", "jdbc:mysql://mysql-db:3306/gym_db",
+        return Map.of("SPRING_DATASOURCE_URL", "jdbc:mysql://mysql-db:3306/gym_db",
                 "SPRING_DATASOURCE_USERNAME", "gymuser",
                 "SPRING_DATASOURCE_PASSWORD", "gympass",
                 "SPRING_DATA_REDIS_HOST", "redis-cache",
-                "EUREKA_CLIENT_ENABLED", "false",
-                "JWT_SECRET", "testSecret");
+                "CORS_ALLOWED_ORIGINS", "http://localhost:3000");
     }
 
     private static Map<String,String> workloadProperties() {
-        return Map.of("MONGODB_URI", "mongodb://localhost:27017/workload_db");
+        return Map.of("MONGODB_URI", "mongodb://mongo-db:27017/workload_db",
+                "SPRING_DATA_MONGODB_URI", "mongodb://mongo-db:27017/workload_db");
     }
 }

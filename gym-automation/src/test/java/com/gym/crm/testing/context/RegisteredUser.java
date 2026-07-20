@@ -1,7 +1,7 @@
 package com.gym.crm.testing.context;
 
-import io.restassured.response.Response;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,8 +10,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestContext {
-    private Response lastResponse;
-    private String token;
-    private RegisteredUser registeredUser;
+@Builder
+public class RegisteredUser {
+    private String username;
+    private String password;
+    private String firstName;
+    private String lastName;
 }

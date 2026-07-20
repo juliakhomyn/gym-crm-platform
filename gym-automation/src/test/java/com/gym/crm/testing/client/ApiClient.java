@@ -23,7 +23,6 @@ public class ApiClient {
 
     public Response post(String path, String token, Object body) {
         return request(token)
-                .log().all()
                 .body(body)
                 .post(baseUrl + path);
     }

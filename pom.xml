@@ -33,6 +33,8 @@
         <sonar.coverage.exclusions>**/config/**</sonar.coverage.exclusions>
         <sonar.exclusions>**/config/**</sonar.exclusions>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <core.image>gym-core-service:local</core.image>
+        <workload.image>workload-service:local</workload.image>
     </properties>
 
     <dependencyManagement>

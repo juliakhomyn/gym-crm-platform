@@ -12,6 +12,7 @@
     </parent>
 
     <artifactId>workload-service</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
         <jsonwebtoken.version>0.12.6</jsonwebtoken.version>
@@ -120,6 +121,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <image>
+                        <name>${workload.image}</name>
+                    </image>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
