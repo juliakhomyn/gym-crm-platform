@@ -10,6 +10,7 @@
 * **[Gateway Service](gateway-service/README.md)**: Routes external requests to the appropriate microservice using Spring Cloud Gateway and Eureka service discovery.
 * **[Workload Service](workload-service/README.md)**: Manages trainer workload data.
 * **[Gym Core Service](gym-core-service/README.md)**: The core service for the CRM system, managing trainees, trainers, training sessions, and user authentication.
+* **[Gym Automation Service (Testing)](gym-automation/README.md)**: Provides end-to-end BDD integration tests using Cucumber, RestAssured, and Testcontainers.
 
 ## Prerequisites
 
@@ -18,6 +19,7 @@ To run this application, you should have the following installed:
 - **Java Development Kit (JDK) 21**
 - **Maven**
 - **Git**
+- **Docker / Docker Desktop** (Required for running the integration test suite via Testcontainers)
 - **Redis**
 - **MySQL Server**
 - **ActiveMQ**
