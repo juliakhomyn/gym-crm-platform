@@ -16,15 +16,19 @@ public class ApiClient {
     }
 
     public Response get(String path, String token, Map<String, ?> queryParams) {
-        RequestSpecification request = request(token).queryParams(queryParams);
-
-        return request.get(baseUrl + path);
+        return request(token)
+                .queryParams(queryParams)
+                .get(baseUrl + path);
     }
 
     public Response post(String path, String token, Object body) {
         return request(token)
                 .body(body)
                 .post(baseUrl + path);
+    }
+
+    public Response delete(String path, String token) {
+        return request(token).delete(baseUrl + path);
     }
 
     private RequestSpecification request(String token) {

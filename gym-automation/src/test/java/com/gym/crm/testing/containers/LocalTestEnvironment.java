@@ -28,10 +28,10 @@ public final class LocalTestEnvironment {
         redis.start();
         activemq.start();
 
-        core = AppContainer.createCoreApp(network);
         workload = AppContainer.createWorkloadApp(network);
-        core.start();
+        core = AppContainer.createCoreApp(network);
         workload.start();
+        core.start();
     }
 
     public static void stop() {
