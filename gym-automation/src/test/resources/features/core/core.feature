@@ -1,4 +1,4 @@
-@component @trainee
+@component @core
 Feature: Trainee Management
 
   @positive

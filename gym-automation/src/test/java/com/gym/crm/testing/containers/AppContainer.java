@@ -15,6 +15,7 @@ public final class AppContainer {
     public static GenericContainer<?> createCoreApp(Network network) {
         return new GenericContainer<>(DockerImageName.parse(System.getProperty("core.image", "gym-core-service:local")))
                 .withNetwork(network)
+                .withNetworkAliases("workload-service")
                 .withExposedPorts(8082)
                 .withEnv(commonProperties())
                 .withEnv(coreProperties())
@@ -50,6 +51,7 @@ public final class AppContainer {
                 "SPRING_DATASOURCE_USERNAME", "gymuser",
                 "SPRING_DATASOURCE_PASSWORD", "gympass",
                 "SPRING_DATA_REDIS_HOST", "redis-cache",
+                "WORKLOAD_SERVICE_URL", "http://workload-service:8081/gym-crm/workload/api/v1",
                 "CORS_ALLOWED_ORIGINS", "http://localhost:3000");
     }
 
