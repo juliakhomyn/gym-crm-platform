@@ -8,7 +8,6 @@ To run this application, you should have the following installed:
 
 - **Java Development Kit (JDK) 21**
 - **Maven**
-- **Git**
 - **Docker Engine / Docker Desktop (running)**
 
 ## 1. Package the Java Applications
@@ -16,20 +15,20 @@ To run this application, you should have the following installed:
 From the root directory (gym-crm-platform), run the package phase to compile code and generate the .jar files in each module's target/ directory:
 
 ```bash
-mvn clean package -DskipTests
+mvn clean package
 ```
 
-## 2. Build the Docker Images Locally
+## 2. Build the Docker Images
 Once the JARs are ready, build the images using the custom Dockerfiles
 
-### Build core service image
+### Core service
 
 ```bash
 cd gym-core-service
 docker build -t gym-core-service:local .
 ```
 
-### Build workload service image
+### Workload service
 
 ```bash
 cd ../workload-service
@@ -48,34 +47,36 @@ docker images
 Run the integration tests using the Maven Failsafe plugin from your project root:
 
 ```bash
-mvn clean verify -pl :gym-automation -am
+mvn verify -pl gym-automation "-DskipITs=false"
 ```
+
+Component tests are disabled by default through skipITs=true. Enable them explicitly with -DskipITs=false.
 
 ### Run Specific Feature Groups (By Target Endpoint / Component)
 
 ```bash
 # Authentication tests only
-mvn clean verify -pl :gym-automation -am -Dcucumber.filter.tags="@auth"
+mvn verify -pl gym-automation "-DskipITs=false" -Dcucumber.filter.tags="@auth"
 
 # Core tests only
-mvn clean verify -pl :gym-automation -am -Dcucumber.filter.tags="@core"
+mvn verify -pl gym-automation "-DskipITs=false" -Dcucumber.filter.tags="@core"
 
 # Workload tests only
-mvn clean verify -pl :gym-automation -am -Dcucumber.filter.tags="@workload"
+mvn verify -pl gym-automation "-DskipITs=false" -Dcucumber.filter.tags="@workload"
 
 # Integration tests only (Core-to-Workload communication)
-mvn clean verify -pl :gym-automation -am -Dcucumber.filter.tags="@integration"
+mvn verify -pl gym-automation "-DskipITs=false" -Dcucumber.filter.tags="@integration"
 ```
 
 ### Run Specific Scenarios (By Test Type)
 
 ```bash
 # Happy path tests only (Status 200 checks)
-mvn clean verify -pl :gym-automation -am -Dcucumber.filter.tags="@positive"
+mvn verify -pl gym-automation "-DskipITs=false" -Dcucumber.filter.tags="@positive"
 
 # Error path tests only (Status 400/401/404 checks)
-mvn clean verify -pl :gym-automation -am -Dcucumber.filter.tags="@negative"
+mvn verify -pl gym-automation "-DskipITs=false" -Dcucumber.filter.tags="@negative"
 
 # Input validation/empty payload/edge cases only
-mvn clean verify -pl :gym-automation -am -Dcucumber.filter.tags="@validation or @edge"
+mvn verify -pl gym-automation "-DskipITs=false" -Dcucumber.filter.tags="@validation or @edge"
 ```
