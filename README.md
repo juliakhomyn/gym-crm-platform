@@ -19,7 +19,7 @@ To run this application, you should have the following installed:
 - **Java Development Kit (JDK) 21**
 - **Maven**
 - **Git**
-- **Docker / Docker Desktop** (Required for running the integration test suite via Testcontainers)
+- **Docker Compose / Docker Desktop** (Required for running full workflow and integration test suite via Testcontainers)
 - **Redis**
 - **MySQL Server**
 - **ActiveMQ**
@@ -55,6 +55,68 @@ To work successfully, services have to be run in the following order.
 4. **[Gym Core Service](gym-core-service/README.md)** (Port `8082`)
 
 Please refer to individual service documentation for specific setup and configuration requirements.
+
+## Run with Docker Compose
+
+The application can be started locally using Docker Compose. The infrastructure consists of:
+- **Discovery Service** — Eureka service registry
+- **API Gateway** — entry point for client requests
+- **Gym Core Service** — main application service
+- **Workload Service** — workload processing service
+- **MySQL** — relational database
+- **MongoDB** — workload database
+- **Redis** — caching
+- **ActiveMQ** — message broker
+
+### 1. Environment variables
+
+Docker uses '.env' file to read local environment variables. Create a '.env' file in the project root and fill it with values from '.env.example' file.
+
+### 2. Start the application
+
+Build all application images:
+
+```bash
+docker compose build
+```
+
+Start all services in detached mode:
+
+```bash
+docker compose up -d
+```
+
+Check the status:
+
+```bash
+docker compose ps
+```
+
+Wait until the required services become healthy before sending requests.
+
+#### Logs
+
+View logs for a particular service:
+
+```bash
+docker compose logs <service-name> --tail <tail-value>
+```
+
+#### Stop the application
+
+Stop containers without removing volumes:
+
+```bash
+docker compose down
+```
+
+Database and other persistent data are stored in Docker volumes, so restarting the containers does not remove the data.
+
+To stop and remove containers, networks and volumes:
+
+```bash
+docker compose down -v
+```
 
 ## Postman Collection
 

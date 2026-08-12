@@ -1,0 +1,195 @@
+name: gym-crm-platform
+
+services:
+
+  mysql:
+    image: mysql:8.4
+    container_name: gym-mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-gym_db}
+      MYSQL_USER: ${MYSQL_USER:-gymuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-gympass}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - gym-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: gym-redis
+    networks:
+      - gym-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mongodb:
+    image: mongo:7
+    container_name: gym-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: workload_service
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - gym-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  activemq:
+    image: apache/activemq-classic:5.18.6
+    container_name: gym-activemq
+    networks:
+      - gym-network
+    ports:
+      - "8161:8161"
+    volumes:
+      - activemq-data:/opt/apache-activemq/data
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/61616' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  discovery-service:
+    build:
+      context: .
+      dockerfile: discovery-service/Dockerfile
+    image: discovery-service:1.0-SNAPSHOT
+    container_name: discovery-service
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL:-http://discovery-service:8761/eureka/}
+    ports:
+      - "8761:8761"
+    networks:
+      - gym-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8761/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+  workload-service:
+    build:
+      context: .
+      dockerfile: workload-service/Dockerfile
+    image: workload-service:1.0-SNAPSHOT
+    container_name: workload-service
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      ACTIVEMQ_BROKER_URL: ${ACTIVEMQ_BROKER_URL:-tcp://activemq:61616}
+      ACTIVEMQ_USER: ${ACTIVEMQ_USER:-gymuser}
+      ACTIVEMQ_PASSWORD: ${ACTIVEMQ_PASSWORD:-gympass}
+      MONGODB_URI: ${MONGODB_URI:-mongodb://mongodb:27017/workload_service}
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL:-http://discovery-service:8761/eureka/}
+      JWT_SECRET: ${JWT_SECRET:-QWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo1Njc4OTAxMjM0NTY3OA==}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      activemq:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    networks:
+      - gym-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8081/gym-crm/workload/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  gym-core-service:
+    build:
+      context: .
+      dockerfile: gym-core-service/Dockerfile
+    image: gym-core-service:1.0-SNAPSHOT
+    container_name: gym-core-service
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      DB_URL: ${DB_URL:-jdbc:mysql://mysql:3306/gym_db}
+      DB_USERNAME: ${DB_USERNAME:-gymuser}
+      DB_PASSWORD: ${DB_PASSWORD:-gympass}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      ACTIVEMQ_BROKER_URL: ${ACTIVEMQ_BROKER_URL:-tcp://activemq:61616}
+      ACTIVEMQ_USER: ${ACTIVEMQ_USER:-gymuser}
+      ACTIVEMQ_PASSWORD: ${ACTIVEMQ_PASSWORD:-gympass}
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL:-http://discovery-service:8761/eureka/}
+      JWT_SECRET: ${JWT_SECRET:-QWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo1Njc4OTAxMjM0NTY3OA==}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000}
+      WORKLOAD_SERVICE_URL: ${WORKLOAD_SERVICE_URL:-http://workload-service:8081/gym-crm/workload/api/v1}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      activemq:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      workload-service:
+        condition: service_healthy
+    ports:
+      - "8082:8082"
+    networks:
+      - gym-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8082/gym-crm/core/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  gateway-service:
+    build:
+      context: .
+      dockerfile: gateway-service/Dockerfile
+    image: gateway-service:1.0-SNAPSHOT
+    container_name: gateway-service
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL:-http://discovery-service:8761/eureka/}
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+      gym-core-service:
+        condition: service_healthy
+      workload-service:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - gym-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+networks:
+  gym-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  mongo-data:
+  activemq-data:

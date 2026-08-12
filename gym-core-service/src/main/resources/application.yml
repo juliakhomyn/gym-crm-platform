@@ -9,9 +9,10 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
   liquibase:
     changelog: classpath:db/migration/master.xml
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   jms:
     queue:
       trainer-workload: trainer.workload.queue
