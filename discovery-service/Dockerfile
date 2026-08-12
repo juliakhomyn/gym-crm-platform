@@ -2,12 +2,12 @@ FROM maven:3.9.9-eclipse-temurin-21 AS build
 
 WORKDIR /workspace
 COPY . .
-RUN mvn -pl gym-core-service -am -DskipTests package
+RUN mvn -pl discovery-service -am -DskipTests package
 
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
-COPY --from=build /workspace/gym-core-service/target/*.jar app.jar
+COPY --from=build /workspace/discovery-service/target/*.jar app.jar
 
-EXPOSE 8082
+EXPOSE 8761
 ENTRYPOINT ["java", "-jar", "app.jar"]

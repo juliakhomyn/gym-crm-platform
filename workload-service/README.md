@@ -37,6 +37,11 @@ ACTIVEMQ_PASSWORD=gympass
 MONGODB_URI=mongodb://localhost:27017/workload_db
 ```
 
+### Microservice URLs
+```text
+DISCOVERY_SERVICE_URL=http://localhost:8761/eureka/                         # Eureka discovery server URL
+```
+
 ## 3. Build the project
 
 ```bash
